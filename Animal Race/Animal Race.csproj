@@ -78,7 +78,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Idle.cs" />
+    <Compile Include="Assets\Scripts\CamScript.cs" />
+    <Compile Include="Assets\Scripts\Idle.cs" />
+    <Compile Include="Assets\Scripts\LandBehaviour.cs" />
     <Compile Include="Assets\Scripts\Ninja.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,8 +5,8 @@ using UnityEngine;
 public class Ninja : MonoBehaviour {
 
     //NINJAS RIGID BODY AND ANIMATOR
-    private Rigidbody2D ninjaRigidBody;
     private Animator ninjaAnimator;
+    public Rigidbody2D NinjaBody { get; set; }
 
     //MOVEMENT AND CHARACTER FLIPPING
     [SerializeField]
@@ -20,16 +20,29 @@ public class Ninja : MonoBehaviour {
     private float groundRadius;
     [SerializeField]
     private LayerMask whatsGround;
-    private bool ground;
-    private bool jump;
     [SerializeField]
     private float jumpForce;
-    private bool doubleJump;
 
-	// Use this for initialization
-	void Start () {
+    //Singleton
+    private static Ninja instance;
+    public static Ninja Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = GameObject.FindObjectOfType<Ninja>();
+            }
+            return instance;
+        }
+    }
+    //Properties
+    public bool Jump { get; set; }
+    public bool OnGround { get; set; }
+
+    void Start () {
         facingRight = true;
-        ninjaRigidBody = GetComponent<Rigidbody2D>();
+        NinjaBody = GetComponent<Rigidbody2D>();
         ninjaAnimator = GetComponent<Animator>();
 	}
 
@@ -37,6 +50,8 @@ public class Ninja : MonoBehaviour {
     void Update()
     {
         handleInput();
+        OnGround = isGrounded();
+        Debug.Log("Grounded = " + OnGround);
     }
 
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
@@ -44,28 +59,26 @@ public class Ninja : MonoBehaviour {
     {
         float horizontal = Input.GetAxis("Horizontal");
         handleLayers();
-        ground = isGrounded();
         handleMovement(horizontal);
         flip(horizontal);
-        resetValues();
     }
 
     private void handleMovement(float horizontal)
     {
-        if (ninjaRigidBody.velocity.y < 0)
+        if (NinjaBody.velocity.y < 0)
         {
-            ninjaAnimator.SetBool("landed", true);
+            ninjaAnimator.SetBool("land",true);
         }
-        ninjaRigidBody.velocity = new Vector2(horizontal * movementSpeed, ninjaRigidBody.velocity.y);
+        if (OnGround)
+        {
+            Debug.Log("On ground");
+            NinjaBody.velocity = new Vector2(horizontal * movementSpeed, 0);
+        }
+        if (Jump && NinjaBody.velocity.y == 0)
+        {
+            NinjaBody.AddForce(new Vector2(0, jumpForce));
+        }
         ninjaAnimator.SetFloat("speed", Mathf.Abs(horizontal));
-
-        if (ground && jump)
-        {
-            Debug.Log("Ground and jump");
-            ground = false;
-            ninjaAnimator.SetTrigger("jump");
-            ninjaRigidBody.AddForce(new Vector2(0, jumpForce));
-        }
     }
 
     private void flip(float horizontal)
@@ -88,19 +101,13 @@ public class Ninja : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("JUMP");
-            jump = true;
+            ninjaAnimator.SetTrigger("jump");
         }
-    }
-
-    private void resetValues()
-    {
-        jump = false;
     }
 
     private bool isGrounded()
     {
-        if(ninjaRigidBody.velocity.y <= 0)
+        if(NinjaBody.velocity.y <= 0)
         {
             foreach(Transform point in groundPoints)
             {
@@ -110,8 +117,6 @@ public class Ninja : MonoBehaviour {
                 {
                     if(coliders[i].gameObject != gameObject)
                     {
-                        ninjaAnimator.ResetTrigger("jump");
-                        ninjaAnimator.SetBool("landed", false);
                         return true;
                     }
                 }
@@ -122,7 +127,7 @@ public class Ninja : MonoBehaviour {
 
     private void handleLayers()
     {
-        if (!ground)
+        if (!OnGround)
         {
             ninjaAnimator.SetLayerWeight(1, 1);
         }
