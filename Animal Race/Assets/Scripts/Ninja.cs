@@ -22,6 +22,16 @@ public class Ninja : MonoBehaviour {
     private LayerMask whatsGround;
     [SerializeField]
     private float jumpForce;
+    [SerializeField]
+    private GameObject kunai;
+
+    //AUDIO
+    private AudioSource jumpSource;
+    [SerializeField]
+    private AudioClip jumpSound;
+    private AudioSource throwSource;
+    [SerializeField]
+    private AudioClip throwSound;
 
     //Singleton
     private static Ninja instance;
@@ -39,11 +49,16 @@ public class Ninja : MonoBehaviour {
     //Properties
     public bool Jump { get; set; }
     public bool OnGround { get; set; }
+    public bool Throw { get; set; }
+
+
 
     void Start () {
         facingRight = true;
         NinjaBody = GetComponent<Rigidbody2D>();
         ninjaAnimator = GetComponent<Animator>();
+        jumpSource = GetComponent<AudioSource>();
+        throwSource = GetComponent<AudioSource>();
 	}
 
     // Update is called once per frame, and it is not the correct way to move a character
@@ -51,7 +66,6 @@ public class Ninja : MonoBehaviour {
     {
         handleInput();
         OnGround = isGrounded();
-        Debug.Log("Grounded = " + OnGround);
     }
 
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
@@ -69,14 +83,18 @@ public class Ninja : MonoBehaviour {
         {
             ninjaAnimator.SetBool("land",true);
         }
-        if (OnGround)
+        if (OnGround || Jump)
         {
-            Debug.Log("On ground");
             NinjaBody.velocity = new Vector2(horizontal * movementSpeed, 0);
         }
-        if (Jump && NinjaBody.velocity.y == 0)
+        if (Jump && NinjaBody.velocity.y==0)
         {
-            NinjaBody.AddForce(new Vector2(0, jumpForce));
+            if (!jumpSource.isPlaying)
+            {
+                jumpSource.PlayOneShot(jumpSound);
+            }
+            NinjaBody.AddForce(Vector2.up*jumpForce, ForceMode2D.Impulse);
+            Jump = false;
         }
         ninjaAnimator.SetFloat("speed", Mathf.Abs(horizontal));
     }
@@ -101,7 +119,13 @@ public class Ninja : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            Jump = true;
             ninjaAnimator.SetTrigger("jump");
+        }
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            ninjaAnimator.SetTrigger("throw");
+            throwKunai(0);
         }
     }
 
@@ -133,6 +157,21 @@ public class Ninja : MonoBehaviour {
         }
         else{
             ninjaAnimator.SetLayerWeight(0, 1);
+        }
+    }
+
+    private void throwKunai(int val)
+    {
+        throwSource.PlayOneShot(throwSound);
+        if (facingRight)
+        {
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0,0,-90)));
+            tmp.GetComponent<KunaiScript>().init(Vector2.right);
+        }
+        else
+        {
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0,0,90)));
+            tmp.GetComponent<KunaiScript>().init(Vector2.left);
         }
     }
 }
