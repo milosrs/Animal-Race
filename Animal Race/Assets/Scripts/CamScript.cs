@@ -17,9 +17,6 @@ public class CamScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (player.transform.position.y > yMin && player.transform.position.y < yMax)
-        {
-            transform.position = new Vector3(Ninja.Instance.transform.position.x + 7, Ninja.Instance.transform.position.y + 3, -10);
-        }
+        transform.position = new Vector3(Ninja.Instance.transform.position.x + 7, 5, -10);
     }
 }

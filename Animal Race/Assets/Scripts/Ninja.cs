@@ -24,6 +24,10 @@ public class Ninja : MonoBehaviour {
     private float jumpForce;
     [SerializeField]
     private GameObject kunai;
+    [SerializeField]
+    private float fallMultiplier = 2.5f;
+    [SerializeField]
+    private float lowJumpMulti = 2f;
 
     //AUDIO
     private AudioSource jumpSource;
@@ -50,8 +54,8 @@ public class Ninja : MonoBehaviour {
     public bool Jump { get; set; }
     public bool OnGround { get; set; }
     public bool Throw { get; set; }
-
-
+    //Background collision ignorer
+    public GameObject bg1, bg2;
 
     void Start () {
         facingRight = true;
@@ -59,13 +63,17 @@ public class Ninja : MonoBehaviour {
         ninjaAnimator = GetComponent<Animator>();
         jumpSource = GetComponent<AudioSource>();
         throwSource = GetComponent<AudioSource>();
-	}
+        Physics2D.IgnoreCollision(bg1.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+        Physics2D.IgnoreCollision(bg2.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+    }
 
     // Update is called once per frame, and it is not the correct way to move a character
     void Update()
     {
         handleInput();
         OnGround = isGrounded();
+        Physics2D.IgnoreCollision(bg1.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+        Physics2D.IgnoreCollision(bg2.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
     }
 
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
@@ -75,6 +83,14 @@ public class Ninja : MonoBehaviour {
         handleLayers();
         handleMovement(horizontal);
         flip(horizontal);
+        if (NinjaBody.velocity.y < 0)
+        {
+            NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        else if (NinjaBody.velocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
+        }
     }
 
     private void handleMovement(float horizontal)
@@ -83,18 +99,17 @@ public class Ninja : MonoBehaviour {
         {
             ninjaAnimator.SetBool("land",true);
         }
-        if (OnGround || Jump)
-        {
-            NinjaBody.velocity = new Vector2(horizontal * movementSpeed, 0);
-        }
-        if (Jump && NinjaBody.velocity.y==0)
+        
+            NinjaBody.velocity = new Vector2(horizontal * movementSpeed, NinjaBody.velocity.y);
+        
+        if (Jump && OnGround)
         {
             if (!jumpSource.isPlaying)
             {
                 jumpSource.PlayOneShot(jumpSound);
             }
             NinjaBody.AddForce(Vector2.up*jumpForce, ForceMode2D.Impulse);
-            Jump = false;
+
         }
         ninjaAnimator.SetFloat("speed", Mathf.Abs(horizontal));
     }

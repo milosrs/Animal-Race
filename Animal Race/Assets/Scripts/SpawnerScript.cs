@@ -5,9 +5,8 @@ using UnityEngine;
 public class SpawnerScript : MonoBehaviour {
 
     public GameObject[] obj;
-    public GameObject background;
-    public float spawnMin = 6f;
-    public float spawnMax = 13f;
+    public float spawnMin = 10f;
+    public float spawnMax = 20f;
 
 	// Use this for initialization
 	void Start () {
