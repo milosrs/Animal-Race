@@ -48,11 +48,16 @@ public class DoggoScript : MonoBehaviour {
 		HandleInput();
 		HandleMovement(horizontal);
 		Flip (horizontal);
+		HandleLayers ();
 		ResetValues();
 	}
 
 	private void HandleMovement(float horizontal)
 	{
+		if (myRigidBody.velocity.y < 0) {
+			myAnimator.SetBool ("land", true);
+		}
+
 		if (isGrounded || airControl)
 		{
 			myRigidBody.velocity = new Vector2 (horizontal * movementSpeed, myRigidBody.velocity.y);
@@ -62,6 +67,7 @@ public class DoggoScript : MonoBehaviour {
 		{
 			isGrounded = false;
 			myRigidBody.AddForce(new Vector2(0, jumpForce));
+			myAnimator.SetTrigger ("jump");
 		}
 
 		//myRigidBody.velocity = new Vector2 (horizontal * movementSpeed, myRigidBody.velocity.y);
@@ -91,6 +97,8 @@ public class DoggoScript : MonoBehaviour {
 				{
 					if (colliders [i].gameObject != gameObject)
 					{
+						myAnimator.ResetTrigger ("jump");
+						myAnimator.SetBool ("land", false);
 						return true;
 					}
 
@@ -110,6 +118,15 @@ public class DoggoScript : MonoBehaviour {
 	private void ResetValues()
 	{
 		jump = false;
+	}
+
+	private void HandleLayers()
+	{
+		if (!isGrounded) {
+			myAnimator.SetLayerWeight (1, 1);
+		} else {
+			myAnimator.SetLayerWeight (1, 0);
+		}
 	}
 
 }
