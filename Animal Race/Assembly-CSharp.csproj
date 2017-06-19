@@ -46,7 +46,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Doggo\Scripts\DoggoScript.cs" />
+     <Compile Include="Assets\Characters\Doggo\Scripts\DoggoScript.cs" />
+     <Compile Include="Assets\Characters\Squirrel\Scripts\SquirrelScript.cs" />
      <Compile Include="Assets\Prefab\BackgroundScript.cs" />
      <Compile Include="Assets\Scripts\CamScript.cs" />
      <Compile Include="Assets\Scripts\DestroyerScript.cs" />
