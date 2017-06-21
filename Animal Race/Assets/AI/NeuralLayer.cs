@@ -5,13 +5,12 @@ using UnityEngine;
 public class NeuralLayer{
     private int totalNeurons;
     private int totalInputs;
+    private List<Neuron> neurons;
 
-    private List<Neuron> neurons = new List<Neuron>();
-
-    public float Sigmoid(float a)
-    { 
-        return (1 / (1 + Mathf.Exp(-a)));
-    }
+	public float Sigmoid(float a)
+	{ 
+		return (1 / (1 + Mathf.Exp(-a)));
+	}
 
     public void evaluate(List<float> input, ref List<float> output)
     {
@@ -31,4 +30,17 @@ public class NeuralLayer{
             inputIndex = 0;
         }
     }
+
+	public NeuralLayer(int numOfInputs, int numOfNeurons){
+		totalInputs = numOfInputs;
+		totalNeurons = numOfNeurons;
+		neurons = new List<Neuron> ();
+
+		for (int i = 0; i < numOfNeurons; i++) {
+			Neuron n = new Neuron ();
+			n.initNeuron (numOfInputs);
+			neurons.Add (n);
+		}
+	}
+
 }
