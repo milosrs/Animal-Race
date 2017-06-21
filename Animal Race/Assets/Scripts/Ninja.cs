@@ -29,14 +29,6 @@ public class Ninja : MonoBehaviour {
     [SerializeField]
     private float lowJumpMulti = 2f;
 
-    //AUDIO
-    private AudioSource jumpSource;
-    [SerializeField]
-    private AudioClip jumpSound;
-    private AudioSource throwSource;
-    [SerializeField]
-    private AudioClip throwSound;
-
     //Singleton
     private static Ninja instance;
     public static Ninja Instance
@@ -61,8 +53,6 @@ public class Ninja : MonoBehaviour {
         facingRight = true;
         NinjaBody = GetComponent<Rigidbody2D>();
         ninjaAnimator = GetComponent<Animator>();
-        jumpSource = GetComponent<AudioSource>();
-        throwSource = GetComponent<AudioSource>();
         Physics2D.IgnoreCollision(bg1.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
         Physics2D.IgnoreCollision(bg2.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
     }
@@ -104,10 +94,6 @@ public class Ninja : MonoBehaviour {
         
         if (Jump && OnGround)
         {
-            if (!jumpSource.isPlaying)
-            {
-                jumpSource.PlayOneShot(jumpSound);
-            }
             NinjaBody.AddForce(Vector2.up*jumpForce, ForceMode2D.Impulse);
 
         }
@@ -177,7 +163,6 @@ public class Ninja : MonoBehaviour {
 
     private void throwKunai(int val)
     {
-        throwSource.PlayOneShot(throwSound);
         if (facingRight)
         {
             GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0,0,-90)));

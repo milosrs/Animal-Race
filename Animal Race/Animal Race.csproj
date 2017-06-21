@@ -86,7 +86,11 @@
     <Compile Include="Assets\Scripts\Idle.cs" />
     <Compile Include="Assets\Scripts\KunaiScript.cs" />
     <Compile Include="Assets\Scripts\LandBehaviour.cs" />
+    <Compile Include="Assets\Scripts\NeuralLayer.cs" />
+    <Compile Include="Assets\Scripts\NeuralNetwork.cs" />
+    <Compile Include="Assets\Scripts\Neuron.cs" />
     <Compile Include="Assets\Scripts\Ninja.cs" />
+    <Compile Include="Assets\Scripts\SensorScript.cs" />
     <Compile Include="Assets\Scripts\SpawnerScript.cs" />
     <Compile Include="Assets\Scripts\ThrowBehaviour.cs" />
   </ItemGroup>
