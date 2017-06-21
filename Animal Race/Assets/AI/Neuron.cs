@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Neuron{
+public class Neuron {
 
-    public int inputNo;
-    public List<float> weights = new List<float>();
+    private int numberOfInputs;
+    public List<float> weights;
 
     public float RandomizeWeights()                     //Random tezine na pocetku
     {
@@ -13,38 +13,43 @@ public class Neuron{
         return rand;
     }
 
-    public float Clamp(float val, float min, float max)
+    public Neuron(int numInput)
     {
-        if (val < min)
-        {
-            val = min;
-        }
-        if (val > max)
-        {
-            val = max;
-        }
-        return val;
-    }
-
-    public void initNeuron(int numInput)
-    {
-        inputNo = numInput;
-        for(int i=0; i<numInput; i++)
+        numberOfInputs = numInput;
+        weights = new List<float>();
+        
+        for (int i = 0; i < numberOfInputs; i++)
         {
             weights.Add(RandomizeWeights());        //Svakom ulazu se dodaje tezina
         }
-
-		weights.Add(RandomizeWeights());                  //Dodaje se tezina bias ulazu
+        weights.Add(RandomizeWeights());                  //Dodaje se tezina bias ulazu
     }
 
-    public void init(List<float> weights, int numInput)
+    public List<float> getWeights(){
+        return weights;
+    }
+
+    public void setWeights(List<float> newWeights)
     {
-        this.weights = weights;                     //Inicijalizacija neurona
-        this.inputNo = numInput;
+        weights = newWeights;
     }
 
-	public float Sigmoid(float a)
+	public static float Sigmoid(float a)
 	{ 
 		return (1 / (1 + Mathf.Exp(-a)));
 	}
+
+    public float output(List<float> inputValues){
+        float res = 0.0f;
+
+        for (int i = 0; i < numberOfInputs; i++)
+        {
+            res += inputValues[i] * weights[i];
+        }
+
+        //jel ovo sigurno ovako
+        res += weights[weights.Count]; // dodamo bias
+
+        return Sigmoid(res);
+    }
 }
