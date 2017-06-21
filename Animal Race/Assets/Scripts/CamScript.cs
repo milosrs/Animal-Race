@@ -5,18 +5,18 @@ using UnityEngine;
 public class CamScript : MonoBehaviour {
 
     [SerializeField]
-    private Ninja player;
+    private GameObject player;
+    private Rigidbody2D body;
     private float yMin = -15f ,yMax = 15f;
-
-    private Transform target;
+    
 	// Use this for initialization
 	void Start () {
-        transform.position = new Vector3(Ninja.Instance.transform.position.x + 7, 0, -10);
-        target = player.transform;
+        body = player.GetComponent<Rigidbody2D>();
+        transform.position = new Vector3(body.position.x + 7, 0, -10);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = new Vector3(Ninja.Instance.transform.position.x + 7, 5, -10);
+        transform.position = new Vector3(body.position.x + 7, 5, -10);
     }
 }
