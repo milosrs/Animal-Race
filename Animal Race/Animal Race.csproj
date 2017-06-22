@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AI\Agent.cs" />
+    <Compile Include="Assets\AI\GA.cs" />
     <Compile Include="Assets\AI\Genome.cs" />
     <Compile Include="Assets\AI\NeuralLayer.cs" />
     <Compile Include="Assets\AI\NeuralNetwork.cs" />
