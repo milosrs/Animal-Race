@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Genome : MonoBehaviour {
+public class Genome {
 
-    public float fitness;
-    public int ID;
-    public List<float> weights;
+    public float fitness; //mera prilagodjenosti
+    public int ID; //spoljna reprezentacija
+    public List<float> weights; //unutrasnja reprezentacija
 }
