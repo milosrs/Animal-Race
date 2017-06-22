@@ -25,13 +25,13 @@ public class NeuralLayer{
         for (int i = 0; i < totalNeurons; i++)
         {
             float activation = 0f;
-            for (int j = 0; j < input.Capacity; j++)
+            for (int j = 0; j < input.Count; j++)
             {
                 activation += input[j] * neurons[inputIndex].weights[j];
                 inputIndex++;
             }
 
-            activation -= neurons[inputIndex].weights[neurons[inputIndex].weights.Capacity - 1];
+            activation -= neurons[inputIndex].weights[neurons[inputIndex].weights.Count - 1];
             output.Add(Neuron.Sigmoid(activation));
             inputIndex = 0;
         }
@@ -42,4 +42,10 @@ public class NeuralLayer{
         return totalNeurons;
     }
 
+    public void setNeurons(int neuronNumber, int inputNumber, List<Neuron> neurons)
+    {
+        totalNeurons = neuronNumber;
+        totalInputs = inputNumber;
+        this.neurons = neurons;
+    }
 }
