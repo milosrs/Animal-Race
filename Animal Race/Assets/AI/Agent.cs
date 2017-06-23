@@ -65,6 +65,9 @@ public class Agent : MonoBehaviour{
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
 
+            Debug.Log("kontrole:" + commandL + ", " + commandR + ", " + commandU);
+            Ninja.Instance.commandMe(commandL, commandR, commandU);
+
             
         }
         if (timeAlive >= 200)

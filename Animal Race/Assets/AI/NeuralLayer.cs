@@ -25,15 +25,14 @@ public class NeuralLayer{
         for (int i = 0; i < totalNeurons; i++)
         {
             float activation = 0.0f;
-            for (int j = 0; j <neurons[i].getNumberOfInputs()-1 ; j++)
+            for (int j = 0; j <neurons[i].getNumberOfInputs() ; j++)
             {
                 activation += input[inputIndex] * neurons[i].weights[j];
                 inputIndex++;
             }
+
             Debug.Log("Iteration: " + i + " |");
-            Neuron bias = neurons[inputIndex];
-            Debug.Log("Bias: "+i+" " + bias.weights);
-            activation -= bias.weights[neurons[inputIndex].weights.Count - 1];
+            activation -= neurons[i].weights[neurons[i].getNumberOfInputs()];
             output.Add(Neuron.Sigmoid(activation));
             inputIndex = 0;
         }

@@ -186,7 +186,7 @@ public class Ninja : MonoBehaviour {
         {
             handleMovement(r);
         }
-        else if (u > l && u > r)
+        else if (u > l && u > r && NinjaBody.velocity.y == 0)
         {
             Jump = true;
             ninjaAnimator.SetTrigger("jump");
