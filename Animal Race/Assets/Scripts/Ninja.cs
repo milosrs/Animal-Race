@@ -7,6 +7,7 @@ public class Ninja : MonoBehaviour {
     //NINJAS RIGID BODY AND ANIMATOR
     private Animator ninjaAnimator;
     public Rigidbody2D NinjaBody { get; set; }
+    private Agent agent;
 
     //MOVEMENT AND CHARACTER FLIPPING
     [SerializeField]
@@ -50,6 +51,7 @@ public class Ninja : MonoBehaviour {
     public GameObject bg1, bg2;
 
     void Start () {
+        agent = GetComponent<Agent>();
         facingRight = true;
         NinjaBody = GetComponent<Rigidbody2D>();
         ninjaAnimator = GetComponent<Animator>();
@@ -191,5 +193,10 @@ public class Ninja : MonoBehaviour {
             Jump = true;
             ninjaAnimator.SetTrigger("jump");
         }
+    }
+
+    public Agent getAgent()
+    {
+        return agent;
     }
 }

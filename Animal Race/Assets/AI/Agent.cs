@@ -64,8 +64,7 @@ public class Agent : MonoBehaviour{
             commandL = nn.getOutput(0);
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
-
-            Debug.Log("kontrole:" + commandL + ", " + commandR + ", " + commandU);
+            
             Ninja.Instance.commandMe(commandL, commandR, commandU);
 
             

@@ -54,7 +54,6 @@ public class NeuralNetwork{
 
         for(int i=0; i<layers.Count-1; i++)
         {
-            Debug.Log("Input count: " + inputs.Count);
             layers[i].Evaluate(inputs, ref outputs);        //Reevaluacija
             inputs = outputs;
         }
