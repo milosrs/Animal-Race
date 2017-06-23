@@ -52,4 +52,9 @@ public class Neuron {
 
         return Sigmoid(res);
     }
+
+    public int getNumberOfInputs()
+    {
+        return numberOfInputs;
+    }
 }

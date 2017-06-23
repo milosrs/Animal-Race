@@ -10,83 +10,86 @@ public class Agent : MonoBehaviour{
     
     //Neuronska mreza, i vektor2 (Za senzore)
     private NeuralNetwork nn;
-    private Vector3 left, right, jump, down30, down50;
 
     //Gde su nasi senzori detektovali koliziju?
-    private Vector3 hitLeft, hitRight, hitUp, hit30, hit50;
-    private Vector2 origin;
+    private List<RaycastHit2D> hits;
+    private List<float> distances;
 
     //Sta su nasi senzori, a sta je igrac
-    public GameObject[] sensors;
+    public GameObject[] sensorStart;    //UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWNERRIGHT, LEFT
+    public GameObject[] sensorEnd;
     public GameObject player;
 
     //Igracevo telo
     private Rigidbody2D playerBody;
+    private float commandL, commandR, commandU;
+    //Komande
+    private float u, l, r, ur, dr, ddr;
 
-    private void Start()
+    private void Awake()
     {
+        hits = new List<RaycastHit2D>();
+        distances = new List<float>();
         playerBody = player.GetComponent<Rigidbody2D>();
-        Vector2 origin = playerBody.position + Vector2.up*0.2f;
-
-        sensors = new GameObject[5];
+        
         failed = false;
-        nn = new NeuralNetwork(5, 5, new int[] { 4, 4 }, 3, 3);
-
-        left = new Vector3(-origin.x, origin.y, 0);
-        right = new Vector3(origin.x, origin.y, 0);
-        Rigidbody2D afterJump = new Rigidbody2D();
-        jump = new Vector3(origin.x, origin.y+4, 0);
-        down30 = new Vector3(origin.x, origin.y);
-        down50 = new Vector3(origin.x, origin.y);
+        nn = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
     }
-
+    
     private void FixedUpdate()
     {
         castSensors();
+
+        u = distances[0];
+        l = distances[1];
+        r = distances[2];
+        ur = distances[3];
+        dr = distances[4];
+        ddr = distances[5];
+
         if (!failed)
         {
             timeAlive += Time.deltaTime;    //Kada ovo dodje do 200, failed = true
+            List<float> inputs = new List<float>();
+            inputs.Add(Normalise(u));
+            inputs.Add(Normalise(l));
+            inputs.Add(Normalise(r));
+            inputs.Add(Normalise(ur));
+            inputs.Add(Normalise(dr));
+            inputs.Add(Normalise(ddr));
+
+            nn.setInput(inputs);
+            nn.refreshNetwork();
+
+            commandL = nn.getOutput(0);
+            commandR = nn.getOutput(1);
+            commandU = nn.getOutput(2);
+
+            
         }
         if (timeAlive >= 200)
         {
             failed = false;                 //Yes
         }
+        
+    }
+
+    public float Normalise(float i)
+    {
+        float depth = i / 3.0f;             //Prosecna duzina Ray-a
+        return 1 - depth;
     }
 
     private void castSensors()
     {
-        //Need fixing
-        Physics2D.Linecast(playerBody.position + Vector2.up * 0.2f, left);
-        Debug.DrawLine(playerBody.position + Vector2.up * 0.2f, left, Color.yellow);
-
-        Physics2D.Linecast(playerBody.position + Vector2.up * 0.2f, right);
-        Debug.DrawLine(playerBody.position + Vector2.up * 0.2f, left, Color.blue);
-
-        Physics2D.Linecast(playerBody.position + Vector2.up * 0.2f, jump);
-        Debug.DrawLine(playerBody.position + Vector2.up * 0.2f, left, Color.yellow);
-
-        Physics2D.Linecast(playerBody.position + Vector2.up * 0.2f, down30);
-        Debug.DrawLine(playerBody.position + Vector2.up * 0.2f, left, Color.yellow);
-
-        Physics2D.Linecast(playerBody.position + Vector2.up * 0.2f, down50);
-        Debug.DrawLine(playerBody.position + Vector2.up * 0.2f, left, Color.yellow);
-    }
-
-
-    /*public Agent()
-    {
-        NeuralNetwork nn = new NeuralNetwork(5, 5, new int[] { 4, 4 }, 3, 3);
-
-        List<float> inputValues = new List<float>();
-
-        List<float> result = nn.Calculate(inputValues);
-
-        foreach(float f in result)
+        for(int i=0; i<sensorEnd.Length; i++)
         {
-            Debug.Log(f);
+            RaycastHit2D result = Physics2D.Linecast(new Vector2(sensorStart[i].transform.position.x, sensorStart[i].transform.position.y), new Vector2(sensorEnd[i].transform.position.x, sensorEnd[i].transform.position.y));
+            hits.Add(result);
+            distances.Add(result.distance);
+            Debug.DrawLine(new Vector2(sensorStart[i].transform.position.x, sensorStart[i].transform.position.y), new Vector2(sensorEnd[i].transform.position.x, sensorEnd[i].transform.position.y), Color.green);
         }
-    }*/
-
+    }
 
 
 }

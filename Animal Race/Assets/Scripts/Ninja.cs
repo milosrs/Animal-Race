@@ -174,4 +174,22 @@ public class Ninja : MonoBehaviour {
             tmp.GetComponent<KunaiScript>().init(Vector2.left);
         }
     }
+
+    public void commandMe(float l, float r, float u)
+    {
+        if(l > r && l > u)
+        {
+            l *= -1;
+            handleMovement(l);
+        }
+        else if(r > l && r > u)
+        {
+            handleMovement(r);
+        }
+        else if (u > l && u > r)
+        {
+            Jump = true;
+            ninjaAnimator.SetTrigger("jump");
+        }
+    }
 }
