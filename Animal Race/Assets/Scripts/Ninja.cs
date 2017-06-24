@@ -25,10 +25,17 @@ public class Ninja : MonoBehaviour {
     private float jumpForce;
     [SerializeField]
     private GameObject kunai;
+
+    //Special ability
     [SerializeField]
     private float fallMultiplier = 2.5f;
     [SerializeField]
     private float lowJumpMulti = 2f;
+
+    //Properties
+    public bool Jump { get; set; }
+    public bool OnGround { get; set; }
+    public bool Throw { get; set; }
 
     //Singleton
     private static Ninja instance;
@@ -43,10 +50,7 @@ public class Ninja : MonoBehaviour {
             return instance;
         }
     }
-    //Properties
-    public bool Jump { get; set; }
-    public bool OnGround { get; set; }
-    public bool Throw { get; set; }
+
     //Background collision ignorer
     public GameObject bg1, bg2;
 
@@ -92,7 +96,7 @@ public class Ninja : MonoBehaviour {
             ninjaAnimator.SetBool("land",true);
         }
         
-            NinjaBody.velocity = new Vector2(horizontal * movementSpeed, NinjaBody.velocity.y);
+        NinjaBody.velocity = new Vector2(horizontal * movementSpeed, NinjaBody.velocity.y);
         
         if (Jump && OnGround)
         {
@@ -181,11 +185,14 @@ public class Ninja : MonoBehaviour {
     {
         if(l > r && l > u)
         {
-            l *= -1;
+            l = -1;
+            flip(l);
             handleMovement(l);
         }
         else if(r > l && r > u)
         {
+            r = 1;
+            flip(r);
             handleMovement(r);
         }
         else if (u > l && u > r && NinjaBody.velocity.y == 0)

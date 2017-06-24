@@ -12,12 +12,34 @@ public class LandBehaviour : StateMachineBehaviour {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (Ninja.Instance.OnGround)
+        
+        if (animator.gameObject.name == "Ninja")
         {
-            animator.SetBool("land", false);
-            animator.ResetTrigger("jump");
+            if (Ninja.Instance.OnGround)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            Ninja.Instance.Jump = false;
         }
-        Ninja.Instance.Jump = false;
+        else if(animator.gameObject.name == "Doggo")
+        {
+            if (DoggoScript.Instance.OnGround)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            DoggoScript.Instance.Jump = false;
+        }
+        else if(animator.gameObject.name == "Squirrel")
+        {
+            //TODO - Prekopiraj skriptu kera u vevericu, namesti joj jumpForce = 800 (da skace vise od svih)
+            //Onda prekopiraj ovo od gore iz bilo kog if-a i kraj.
+        }
+        else if(animator.gameObject.name == "Dragon")
+        {
+            //TODO - isto kao i za vevericu
+        }
     }
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state

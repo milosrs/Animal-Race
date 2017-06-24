@@ -84,7 +84,9 @@
     <Compile Include="Assets\AI\NeuralLayer.cs" />
     <Compile Include="Assets\AI\NeuralNetwork.cs" />
     <Compile Include="Assets\AI\Neuron.cs" />
+    <Compile Include="Assets\Characters\Doggo\Scripts\DoggoOLDSCRIPT.cs" />
     <Compile Include="Assets\Characters\Doggo\Scripts\DoggoScript.cs" />
+    <Compile Include="Assets\Characters\Dragon\Scripts\DragonScript.cs" />
     <Compile Include="Assets\Characters\Squirrel\Scripts\SquirrelScript.cs" />
     <Compile Include="Assets\Prefab\BackgroundScript.cs" />
     <Compile Include="Assets\Scripts\CamScript.cs" />

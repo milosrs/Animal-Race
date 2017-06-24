@@ -4,129 +4,209 @@ using UnityEngine;
 
 public class DoggoScript : MonoBehaviour {
 
-	private Rigidbody2D myRigidBody;
+    //DOGGOS RIGID BODY AND ANIMATOR
+    private Animator doggoAnimator;
+    public Rigidbody2D DoggoBody { get; set; }
+    private Agent agent;
 
-	private Animator myAnimator;
+    //MOVEMENT AND CHARACTER FLIPPING
+    [SerializeField]
+    private float movementSpeed;
+    private bool facingRight;
 
+    //JUMPING
+    [SerializeField]
+    private Transform[] groundPoints;
+    [SerializeField]
+    private float groundRadius;
+    [SerializeField]
+    private LayerMask whatsGround;
+    [SerializeField]
+    private float jumpForce;
 
-	[SerializeField]
-	private float movementSpeed;
+    /*[SerializeField]
+    private GameObject kunai;           //This will be Doggo special ability
+    */
 
-	private bool facingRight;
+    //Special ability
+    [SerializeField]
+    private float fallMultiplier = 2.5f;
+    [SerializeField]
+    private float lowJumpMulti = 2f;
 
-	[SerializeField]
-	private Transform[] groundPoints;
+    //Properties
+    public bool Jump { get; set; }
+    public bool OnGround { get; set; }
+    public bool Throw { get; set; }
+    
 
-	[SerializeField]
-	private float groundRadius;
-
-	[SerializeField]
-	private LayerMask whatIsGround;
-
-	private bool isGrounded;
-
-	private bool jump;
-
-	[SerializeField]
-	private bool airControl;
-
-	[SerializeField]
-	private float jumpForce;
-
+    //Singleton
+    private static DoggoScript instance;
+    public static DoggoScript Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = GameObject.FindObjectOfType<DoggoScript>();
+            }
+            return instance;
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
-		facingRight = true;
-		myRigidBody = GetComponent<Rigidbody2D>();
-		myAnimator = GetComponent<Animator>();
-	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-		float horizontal = Input.GetAxis("Horizontal2");
-		isGrounded = IsGrounded();
-		HandleInput();
-		HandleMovement(horizontal);
-		Flip (horizontal);
-		HandleLayers ();
-		ResetValues();
-	}
+        agent = GetComponent<Agent>();
+        facingRight = true;
+        DoggoBody = GetComponent<Rigidbody2D>();
+        doggoAnimator = GetComponent<Animator>();
+    }
 
-	private void HandleMovement(float horizontal)
-	{
-		if (myRigidBody.velocity.y < 0) {
-			myAnimator.SetBool ("land", true);
-		}
+    // Update is called once per frame, and it is not the correct way to move a character
+    void Update()
+    {
+        handleInput();
+        OnGround = IsGrounded();
+    }
 
-		if (isGrounded || airControl)
-		{
-			myRigidBody.velocity = new Vector2 (horizontal * movementSpeed, myRigidBody.velocity.y);
-		}
 
-		if (isGrounded && jump)
-		{
-			isGrounded = false;
-			myRigidBody.AddForce(new Vector2(0, jumpForce));
-			myAnimator.SetTrigger ("jump");
-		}
+    //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
+    private void FixedUpdate()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        handleLayers();
+        handleMovement(horizontal);
+        flip(horizontal);
+        if (DoggoBody.velocity.y < 0)
+        {
+            DoggoBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        else if (DoggoBody.velocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            DoggoBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
+        }
+    }
 
-		//myRigidBody.velocity = new Vector2 (horizontal * movementSpeed, myRigidBody.velocity.y);
-		myAnimator.SetFloat("speed", Mathf.Abs(horizontal));
-	}
+    private void handleMovement(float horizontal)
+    {
+        if (DoggoBody.velocity.y < 0)
+        {
+            doggoAnimator.SetBool("land", true);
+        }
 
-	private void Flip(float horizontal)
-	{
-		if (horizontal > 0 && !facingRight || horizontal < 0 && facingRight)
-		{
-			facingRight = !facingRight;
-			Vector3 theScale = transform.localScale;
-			theScale.x *= -1;
-			transform.localScale = theScale;
-		}
-	}
+        DoggoBody.velocity = new Vector2(horizontal * movementSpeed, DoggoBody.velocity.y);
 
-	private bool IsGrounded()
-	{
-		if (myRigidBody.velocity.y <= 0)
-		{
-			foreach (Transform point in groundPoints)
-			{
-				Collider2D[] colliders = Physics2D.OverlapCircleAll(point.position, groundRadius, whatIsGround);	
-			
-				for (int i = 0; i < colliders.Length; i++)
-				{
-					if (colliders [i].gameObject != gameObject)
-					{
-						myAnimator.ResetTrigger ("jump");
-						myAnimator.SetBool ("land", false);
-						return true;
-					}
+        if (Jump && OnGround)
+        {
+            DoggoBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
-				}
-			
-			}
-		}
-		return false;
-	}
+        }
+        doggoAnimator.SetFloat("speed", Mathf.Abs(horizontal));
+    }
 
-	private void HandleInput()
-	{
-		if(Input.GetKeyDown(KeyCode.I))
-			jump = true;
-	}
+    private void flip(float horizontal)
+    {
+        Vector3 scale = transform.localScale;
+        if (horizontal > 0 && !facingRight)
+        {
+            facingRight = !facingRight;
+            scale.x *= -1;
+        }
+        else if (horizontal < 0 && facingRight)
+        {
+            facingRight = !facingRight;
+            scale.x *= -1;
+        }
+        transform.localScale = scale;
+    }
 
-	private void ResetValues()
-	{
-		jump = false;
-	}
+    private void handleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump = true;
+            doggoAnimator.SetTrigger("jump");
+        }
+        /*if (Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            doggoAnimator.SetTrigger("throw");
+            //throwKunai(0);                CALL SPECIAL ABILITY
+        }*/
+    }
 
-	private void HandleLayers()
-	{
-		if (!isGrounded) {
-			myAnimator.SetLayerWeight (1, 1);
-		} else {
-			myAnimator.SetLayerWeight (1, 0);
-		}
-	}
+    private bool IsGrounded()
+    {
+        if (DoggoBody.velocity.y <= 0)
+        {
+            foreach (Transform point in groundPoints)
+            {
+                Collider2D[] colliders = Physics2D.OverlapCircleAll(point.position, groundRadius, whatsGround);
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    if (colliders[i].gameObject != gameObject)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void handleLayers()
+    {
+        if (!OnGround)
+        {
+            doggoAnimator.SetLayerWeight(1, 1);
+        }
+        else
+        {
+            doggoAnimator.SetLayerWeight(0, 1);
+        }
+    }
+
+    /*private void throwKunai(int val)
+    {
+        if (facingRight)
+        {
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0, 0, -90)));
+            tmp.GetComponent<KunaiScript>().init(Vector2.right);
+        }
+        else
+        {
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0, 0, 90)));
+            tmp.GetComponent<KunaiScript>().init(Vector2.left);
+        }
+        // THIS WILL BE A METHOD FOR DOGS SPECIAL ABILITY
+    }*/
+
+    public void commandMe(float l, float r, float u)
+    {
+        if (l > r && l > u)
+        {
+            Debug.Log("Dog should move left");
+            l = -1;
+            flip(l);
+            handleMovement(l);
+        }
+        else if (r > l && r > u)
+        {
+            Debug.Log("Dog should move right");
+            flip(r);
+            r = 1;
+            handleMovement(r);
+        }
+        else if (u > l && u > r && DoggoBody.velocity.y == 0)
+        {
+            Debug.Log("Dog should jump");
+            Jump = true;
+            doggoAnimator.SetTrigger("jump");
+        }
+    }
+
+    public Agent getAgent()
+    {
+        return agent;
+    }
 
 }

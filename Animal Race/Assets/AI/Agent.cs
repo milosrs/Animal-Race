@@ -64,10 +64,15 @@ public class Agent : MonoBehaviour{
             commandL = nn.getOutput(0);
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
-            
-            Ninja.Instance.commandMe(commandL, commandR, commandU);
 
-            
+            if (player.name == "Ninja")
+            {
+                Ninja.Instance.commandMe(commandL, commandR, commandU);
+            }
+            else if (player.name == "Doggo")
+            {
+                DoggoScript.Instance.commandMe(commandL, commandR, commandU);
+            }
         }
         if (timeAlive >= 200)
         {
