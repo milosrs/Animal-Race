@@ -8,6 +8,7 @@ public class DoggoScript : MonoBehaviour {
     private Animator doggoAnimator;
     public Rigidbody2D DoggoBody { get; set; }
     private Agent agent;
+    private float distance;
 
     //MOVEMENT AND CHARACTER FLIPPING
     [SerializeField]
@@ -73,7 +74,7 @@ public class DoggoScript : MonoBehaviour {
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
     private void FixedUpdate()
     {
-        float horizontal = Input.GetAxis("Horizontal");
+        float horizontal = Input.GetAxis("Horizontal2");
         handleLayers();
         handleMovement(horizontal);
         flip(horizontal);
@@ -81,7 +82,7 @@ public class DoggoScript : MonoBehaviour {
         {
             DoggoBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (DoggoBody.velocity.y > 0 && !Input.GetButton("Jump"))
+        else if (DoggoBody.velocity.y > 0 && !Input.GetButton("Jump2"))
         {
             DoggoBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
         }
@@ -209,4 +210,13 @@ public class DoggoScript : MonoBehaviour {
         return agent;
     }
 
+    public float getDistance()
+    {
+        return distance;
+    }
+
+    public void setDistance(float d)
+    {
+        distance = d;
+    }
 }

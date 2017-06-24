@@ -51,6 +51,9 @@ public class Ninja : MonoBehaviour {
         }
     }
 
+    //How far did this character get?
+    private float distance;
+
     //Background collision ignorer
     public GameObject bg1, bg2;
 
@@ -205,5 +208,15 @@ public class Ninja : MonoBehaviour {
     public Agent getAgent()
     {
         return agent;
+    }
+
+    public float getDistance()
+    {
+        return distance;
+    }
+
+    public void setDistance(float d)
+    {
+        distance = d;
     }
 }

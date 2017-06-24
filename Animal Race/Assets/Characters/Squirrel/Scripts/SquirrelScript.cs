@@ -7,6 +7,7 @@ public class SquirrelScript : MonoBehaviour {
     public Rigidbody2D myRigidBody { get; set; }
 	private Animator myAnimator;
     private Agent agent;
+    private float distance;
 
 	[SerializeField]
 	private float movementSpeed;
@@ -33,7 +34,7 @@ public class SquirrelScript : MonoBehaviour {
 	private bool airControl;
 
     private static SquirrelScript instance;
-    public static SquirrelScript Instante
+    public static SquirrelScript Instance
     {
         get
         {
@@ -70,7 +71,7 @@ public class SquirrelScript : MonoBehaviour {
         {
             myRigidBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (myRigidBody.velocity.y > 0 && !Input.GetButton("jump"))
+        else if (myRigidBody.velocity.y > 0 && !Input.GetButton("Jump3"))
         {
             myRigidBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
         }
@@ -172,5 +173,15 @@ public class SquirrelScript : MonoBehaviour {
     public Agent getAgent()
     {
         return agent;
+    }
+
+    public float getDistance()
+    {
+        return distance;
+    }
+
+    public void setDistance(float d)
+    {
+        distance = d;
     }
 }

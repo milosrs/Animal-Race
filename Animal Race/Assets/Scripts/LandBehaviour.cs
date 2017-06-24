@@ -33,12 +33,21 @@ public class LandBehaviour : StateMachineBehaviour {
         }
         else if(animator.gameObject.name == "Squirrel")
         {
-            //TODO - Prekopiraj skriptu kera u vevericu, namesti joj jumpForce = 800 (da skace vise od svih)
-            //Onda prekopiraj ovo od gore iz bilo kog if-a i kraj.
+            if (SquirrelScript.Instance.isGrounded)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            SquirrelScript.Instance.jump = false;
         }
         else if(animator.gameObject.name == "Dragon")
         {
-            //TODO - isto kao i za vevericu
+            if (DragonScript.Instance.isGrounded)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            DragonScript.Instance.jump = false;
         }
     }
 

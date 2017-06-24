@@ -73,6 +73,14 @@ public class Agent : MonoBehaviour{
             {
                 DoggoScript.Instance.commandMe(commandL, commandR, commandU);
             }
+            else if (player.name == "Squirrel")
+            {
+                SquirrelScript.Instance.commandMe(commandL, commandR, commandU);
+            }
+            else if (player.name == "Dragon")
+            {
+                DragonScript.Instance.commandMe(commandL, commandR, commandU);
+            }
         }
         if (timeAlive >= 200)
         {
@@ -98,5 +106,18 @@ public class Agent : MonoBehaviour{
         }
     }
 
+    public void attachNet(NeuralNetwork nn)
+    {
+        this.nn = nn;
+    }
 
+    public bool getFail()
+    {
+        return failed;
+    }
+
+    public void setFail(bool f)
+    {
+        failed = f;
+    }
 }

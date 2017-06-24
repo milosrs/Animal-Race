@@ -85,4 +85,39 @@ public class NeuralNetwork{
     {
         return layers.Count - 2;
     }
+
+    public void fromGenome(Genome g)
+    {
+        List<float> nw = new List<float>();
+        for(int i=0; i<g.weights.Count; i++)
+        {
+            nw.Add(g.weights[i]);
+        }
+        
+        for (int i=0; i<layers.Count; i++)
+        {
+            for(int j=0; j<layers[i].GetNumOfNeurons(); j++)
+            {
+                List<float> layerWeight = new List<float>();
+                for(int k=0; k< layers[i].getNeurons()[j].getWeights().Count; k++)
+                {
+                    layerWeight.Add(nw[k]);
+                    nw.RemoveAt(k);
+                }
+                layers[i].getNeurons()[j].setWeights(layerWeight);
+            }
+        }
+    }
+
+    public void toGenome(Genome g)
+    {
+        g.weights.Clear();
+        for(int i=0; i<layers.Count; i++)
+        {
+            for(int j=0; j<layers[i].GetNumOfNeurons(); j++)
+            {
+                g.weights.AddRange(layers[i].getNeurons()[j].weights);
+            }
+        }
+    }
 }

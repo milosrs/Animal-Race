@@ -47,4 +47,9 @@ public class NeuralLayer{
         totalInputs = inputNumber;
         this.neurons = neurons;
     }
+
+    public List<Neuron> getNeurons()
+    {
+        return neurons;
+    }
 }

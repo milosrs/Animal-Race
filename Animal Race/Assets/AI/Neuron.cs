@@ -57,4 +57,5 @@ public class Neuron {
     {
         return numberOfInputs;
     }
+    
 }

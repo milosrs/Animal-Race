@@ -266,4 +266,31 @@ public class GA {
         }
         generation.Clear();
     }
+
+    public Genome getNextGenome()
+    {
+        currentGenome++;
+        if(currentGenome > generation.Count)
+        {
+            return null;
+        }
+        return generation[currentGenome];
+    }
+    
+    public int getCurrentGenomeIndex()
+    {
+        return currentGenome;
+    }
+
+    public void setGenomeFitness(float fitness, int index)
+    {
+        if(index >= generation.Count)
+        {
+            return;
+        }
+        else
+        {
+            generation[index].fitness = fitness;
+        }
+    }
 }

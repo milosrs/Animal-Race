@@ -7,6 +7,7 @@ public class DragonScript : MonoBehaviour {
     private Rigidbody2D myRigidBody { get; set; }
     private Animator myAnimator;
     private Agent agent;
+    private float distance; 
 
     [SerializeField]
     private float movementSpeed;
@@ -69,7 +70,7 @@ public class DragonScript : MonoBehaviour {
         {
             myRigidBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (myRigidBody.velocity.y > 0 && !Input.GetButton("jump"))
+        else if (myRigidBody.velocity.y > 0 && !Input.GetButton("Jump4"))
         {
             myRigidBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
         }
@@ -184,4 +185,13 @@ public class DragonScript : MonoBehaviour {
         return agent;
     }
 
+    public float getDistance()
+    {
+        return distance;
+    }
+
+    public void setDistance(float d)
+    {
+        distance = d;
+    }
 }
