@@ -4,50 +4,75 @@ using UnityEngine;
 
 public class DragonScript : MonoBehaviour {
 
-    private Rigidbody2D myRigidBody;
-
+    private Rigidbody2D myRigidBody { get; set; }
     private Animator myAnimator;
+    private Agent agent;
 
     [SerializeField]
     private float movementSpeed;
-
     private bool facingRight;
 
     [SerializeField]
     private Transform[] groundPoints;
-
     [SerializeField]
     private float groundRadius;
-
     [SerializeField]
     private LayerMask whatIsGround;
+    [SerializeField]
+    private float jumpForce;
 
-    private bool isGrounded;
+    [SerializeField]
+    private float fallMultiplier = 2.5f;
+    [SerializeField]
+    private float lowJumpMulti = 2f;
 
-    private bool jump;
+    public bool isGrounded { get; set; }
+    public bool jump { get; set; }
 
     [SerializeField]
     private bool airControl;
 
-    [SerializeField]
-    private float jumpForce;
+    private static DragonScript instance;
+    public static DragonScript Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = GameObject.FindObjectOfType<DragonScript>();
+            }
+            return instance;
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
+        agent = GetComponent<Agent>();
         facingRight = true;
         myRigidBody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
 	}
+
+    void Update()
+    {
+        HandleInput();
+        isGrounded = IsGrounded();
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
         float horizontal = Input.GetAxis("Horizontal4");
-        isGrounded = IsGrounded();
-        HandleInput();
+        HandleLayers();
         HandleMovement(horizontal);
         Flip(horizontal);
-        HandleLayers();
-        ResetValues();
+        if (myRigidBody.velocity.y < 0)
+        {
+            myRigidBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        else if (myRigidBody.velocity.y > 0 && !Input.GetButton("jump"))
+        {
+            myRigidBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
+        }
 	}
 
     private void HandleMovement(float horizontal)
@@ -57,16 +82,11 @@ public class DragonScript : MonoBehaviour {
             myAnimator.SetBool("land", true);
         }
 
-        if (isGrounded || airControl)
-        {
-            myRigidBody.velocity = new Vector2(horizontal * movementSpeed, myRigidBody.velocity.y);
-        }
+        myRigidBody.velocity = new Vector2(horizontal * movementSpeed, myRigidBody.velocity.y);
 
         if (isGrounded && jump)
         {
-            isGrounded = false;
-            myRigidBody.AddForce(new Vector2(0, jumpForce));
-            myAnimator.SetTrigger("jump");
+            myRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
 
         //myRigidBody.velocity = new Vector2 (horizontal * movementSpeed, myRigidBody.velocity.y);
@@ -75,13 +95,18 @@ public class DragonScript : MonoBehaviour {
 
     private void Flip(float horizontal)
     {
-        if (horizontal > 0 && !facingRight || horizontal < 0 && facingRight)
+        Vector3 scale = transform.localScale;
+        if (horizontal > 0 && !facingRight)
         {
             facingRight = !facingRight;
-            Vector3 theScale = transform.localScale;
-            theScale.x *= -1;
-            transform.localScale = theScale;
+            scale.x *= -1;
         }
+        else if (horizontal < 0 && facingRight)
+        {
+            facingRight = !facingRight;
+            scale.x *= -1;
+        }
+        transform.localScale = scale;
     }
 
     private bool IsGrounded()
@@ -96,13 +121,9 @@ public class DragonScript : MonoBehaviour {
                 {
                     if (colliders[i].gameObject != gameObject)
                     {
-                        myAnimator.ResetTrigger("jump");
-                        myAnimator.SetBool("land", false);
                         return true;
                     }
-
                 }
-
             }
         }
         return false;
@@ -111,7 +132,10 @@ public class DragonScript : MonoBehaviour {
     private void HandleInput()
     {
         if (Input.GetKeyDown(KeyCode.X))
+        {
             jump = true;
+            myAnimator.SetTrigger("jump");
+        }
     }
 
     private void ResetValues()
@@ -131,6 +155,33 @@ public class DragonScript : MonoBehaviour {
         }
     }
 
+    public void commandMe(float l, float r, float u)
+    {
+        if (l > r && l > u)
+        {
+            Debug.Log("Dragon should move left");
+            l = -1;
+            Flip(l);
+            HandleMovement(l);
+        }
+        else if (r > l && r > u)
+        {
+            Debug.Log("Dragon should move right");
+            Flip(r);
+            r = 1;
+            HandleMovement(r);
+        }
+        else if (u > l && u > r && myRigidBody.velocity.y == 0)
+        {
+            Debug.Log("Dragon should jump");
+            jump = true;
+            myAnimator.SetTrigger("jump");
+        }
+    }
 
+    public Agent getAgent()
+    {
+        return agent;
+    }
 
 }
