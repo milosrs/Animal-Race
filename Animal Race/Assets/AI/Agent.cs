@@ -82,10 +82,12 @@ public class Agent : MonoBehaviour{
                 DragonScript.Instance.commandMe(commandL, commandR, commandU);
             }
         }
-        if (timeAlive >= 200)
+        if (timeAlive >= 20)
         {
-            failed = false;                 //Yes
+            failed = true;                 //Yes
+            timeAlive = 0;
         }
+        Debug.Log("Time alive = " + timeAlive);
         
     }
 
@@ -119,5 +121,11 @@ public class Agent : MonoBehaviour{
     public void setFail(bool f)
     {
         failed = f;
+    }
+
+    public void ClearFailure()
+    {
+        failed = false;
+        Ninja.Instance.setDistance(0.0f);
     }
 }

@@ -219,4 +219,9 @@ public class Ninja : MonoBehaviour {
     {
         distance = d;
     }
+
+    public void setAgent(Agent agent)
+    {
+        this.agent = agent;
+    }
 }

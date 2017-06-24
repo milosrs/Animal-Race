@@ -17,6 +17,13 @@ public class CamScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = new Vector3(body.position.x + 7, 5, -10);
+        if (body != null)
+        {
+            transform.position = new Vector3(body.position.x + 7, 5, -10);
+        }
+        else
+        {
+            body = player.GetComponent<Rigidbody2D>();
+        }
     }
 }

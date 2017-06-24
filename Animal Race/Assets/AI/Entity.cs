@@ -55,6 +55,7 @@ public class Entity : MonoBehaviour {
 
     private void Update()
     {
+        Debug.Log("Default position:" + defaultpos);
         if (testAgent.getFail())
         {
             if (genAlg.getCurrentGenomeIndex() == 15-1)
@@ -62,6 +63,10 @@ public class Entity : MonoBehaviour {
                 EvolveGenomes();
                 return;
             }
+        }
+        else
+        {
+
         }
         if (gameObject.name == "Ninja")
         {
@@ -79,11 +84,11 @@ public class Entity : MonoBehaviour {
         {
             currAgentFitness = DragonScript.Instance.getDistance();
         }
-        
         if(currAgentFitness > bestFitness)
         {
             bestFitness = currAgentFitness;
         }
+        
     }
 
     public void EvolveGenomes()
@@ -104,6 +109,23 @@ public class Entity : MonoBehaviour {
         transform.rotation = defaultrot;
 
         testAgent.attachNet(neuralNet);
-        testAgent.setFail(false);
+        testAgent.ClearFailure();
+        if (gameObject.name == "Ninja")
+        {
+            Ninja.Instance.transform.position = defaultpos;
+            Ninja.Instance.setAgent(testAgent);
+        }
+        else if (gameObject.name == "Doggo")
+        {
+            DoggoScript.Instance.transform.position = defaultpos;
+        }
+        else if (gameObject.name == "Squirell")
+        {
+            SquirrelScript.Instance.transform.position = defaultpos;
+        }
+        else if (gameObject.name == "Dragon")
+        {
+            DragonScript.Instance.transform.position = defaultpos;
+        }
     }
 }
