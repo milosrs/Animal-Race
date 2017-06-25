@@ -124,7 +124,14 @@ public class GA {
     public void CrossBreed(Genome parent1, Genome parent2, Genome baby1, Genome baby2)
     {
         int singlePoint = Mathf.CeilToInt(Randomize(0.0f, totalWeights));
-        totalWeights = parent1.weights.Count;
+        if (parent1.fitness > parent2.fitness)
+        {
+            totalWeights = parent1.weights.Count;
+        }
+        else
+        {
+            totalWeights = parent2.weights.Count;
+        }
 
         Debug.Log("Total weights " + totalWeights);
         Debug.Log("Parent1 weight count: " + parent1.weights.Count);
@@ -134,13 +141,41 @@ public class GA {
         {
             if (i < singlePoint)
             {
-                baby1.weights.Add(parent1.weights[i]);
-                baby2.weights.Add(parent2.weights[i]);
+                try
+                {
+                    baby1.weights.Add(parent1.weights[i]);
+                }
+                catch
+                {
+                    baby1.weights.Add(Randomize(-2.0f, 2.0f));
+                }
+                try
+                {
+                    baby2.weights.Add(parent2.weights[i]);
+                }
+                catch
+                {
+                    baby2.weights.Add(Randomize(-2.0f, 2.0f));
+                }
             }
             else
             {
-                baby1.weights.Add(parent2.weights[i]);
-                baby2.weights.Add(parent1.weights[i]);
+                try
+                {
+                    baby1.weights.Add(parent2.weights[i]);
+                }
+                catch
+                {
+                    baby1.weights.Add(Randomize(-2.0f, 2.0f));
+                }
+                try
+                {
+                    baby2.weights.Add(parent1.weights[i]);
+                }
+                catch
+                {
+                    baby2.weights.Add(Randomize(-2.0f, 2.0f));
+                }
             }
         }
     }
