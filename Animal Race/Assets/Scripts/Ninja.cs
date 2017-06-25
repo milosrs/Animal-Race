@@ -176,7 +176,6 @@ public class Ninja : MonoBehaviour {
     {
         if(l > r && l > u)
         {
-
             if (transform.localScale.x < 0)
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
             NinjaBody.velocity = new Vector2(l * movementSpeed, NinjaBody.velocity.y);
@@ -195,7 +194,6 @@ public class Ninja : MonoBehaviour {
         {
             NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             ninjaAnimator.SetTrigger("jump");
-
         }
     }
 

@@ -121,11 +121,16 @@ public class GA {
     /// <param name="parent2">Roditelj 2 kog je vratio rulet</param>
     /// <param name="baby1">Prva beba koja ce biti ukrstana</param>
     /// <param name="baby2">Druga beba koja ce biti ukrstana</param>
-    public void CrossBreed(Genome parent1, Genome parent2,ref Genome baby1, ref Genome baby2)
+    public void CrossBreed(Genome parent1, Genome parent2, Genome baby1, Genome baby2)
     {
         int singlePoint = Mathf.CeilToInt(Randomize(0.0f, totalWeights));
+        totalWeights = parent1.weights.Count;
 
-        for (int i = 0; i < totalWeights; i++)
+        Debug.Log("Total weights " + totalWeights);
+        Debug.Log("Parent1 weight count: " + parent1.weights.Count);
+        Debug.Log("Parent2 weight count: " + parent2.weights.Count);
+
+        for (int i = 0; i < totalWeights-3; i++)
         {
             if (i < singlePoint)
             {
@@ -143,7 +148,7 @@ public class GA {
     /// <summary>
     /// Pravi novu generaciju genoma koja se sastoji od proslih genoma i novih, dobijenih preko metode CrossBreed
     /// </summary>
-    public List<Genome> BreedNewGeneration()
+    public void BreedNewGeneration()
     {
         List<Genome> newPopulation = new List<Genome>();
 
@@ -153,9 +158,11 @@ public class GA {
         {
             Genome baby1 = new Genome();
             baby1.fitness = 0.0f;
+            baby1.weights = new List<float>();
             Genome baby2 = new Genome();
             baby2.fitness = 0.0f;
-            CrossBreed(bestGenoms[i], bestGenoms[i + 2], ref baby1, ref baby2);
+            baby2.weights = new List<float>();
+            CrossBreed(bestGenoms[i], bestGenoms[i + 2], baby1, baby2);
             Mutation(baby1);
             Mutation(baby2);
             newPopulation.Add(baby1);
@@ -187,11 +194,11 @@ public class GA {
         }
        
         currentGeneration++;
-        if(currentGeneration == 2000)
+        if(currentGeneration == 200)
         {
             mutationRate /= 3;
         }
-        return newPopulation;    
+        this.generation = newPopulation;
     }
 
     /// <summary>

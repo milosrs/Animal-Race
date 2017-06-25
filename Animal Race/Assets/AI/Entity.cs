@@ -12,6 +12,7 @@ public class Entity : MonoBehaviour {
     private GameObject[] players;
 
     private Agent agent;
+
     /// <summary>
     /// totalWeights = br senzora * br ulaznih neurona + skriveni sloj * br_izlaza iz prethodnog +
     /// + skriveni sloj * br_izlaza iz prethodnog + broj izlaznih neurona * broj izlaza iz prethodnog
@@ -21,24 +22,28 @@ public class Entity : MonoBehaviour {
     private void Start()
     {
         genAlg = new GA();
-        int totalWeights = 6 * 6 + 4 * 6 + 4 * 4 + 3 * 4 + 17;
-        genAlg.GenerateNewGeneration(players.Length, totalWeights);
+        int totalWeights = 6 * 6 + 4 * 6 + 4 * 4 + 3 * 4 + 14;
+        genAlg.GenerateNewGeneration(1, totalWeights);
 
         NeuralNetwork neuralNet = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
         //neuralNet.toGenome(ge
         agent = players[0].GetComponent<Agent>();
-        agent.attachNet(neuralNet);
+        agent.AttachNet(neuralNet);
 
-        
-        
-        neuralNet.fromGenome(genAlg.getGenomeAt(0));
+        neuralNet.toGenome(genAlg.getGenomeAt(0));
         
 
     }
 
     private void Update()
     {
-      
+        if (agent.GetFailed())
+        {
+            genAlg.getGenomeAt(0);
+            genAlg.BreedNewGeneration();
+            agent.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(0));
+
+        }
         
     }
 

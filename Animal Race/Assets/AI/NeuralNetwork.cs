@@ -99,10 +99,17 @@ public class NeuralNetwork{
             for(int j=0; j<layers[i].GetNumOfNeurons(); j++)
             {
                 List<float> layerWeight = new List<float>();
-                for(int k=0; k< layers[i].getNeurons()[j].getWeights().Count; k++)
+                for(int k=0; k < layers[i].getNeurons()[j].weights.Count; k++)
                 {
-                    layerWeight.Add(nw[k]);
-                    nw.RemoveAt(k);
+                    try
+                    {
+                        layerWeight.Add(nw[k]);
+                        nw.RemoveAt(k);
+                    }
+                    catch
+                    {
+                        layerWeight.Add(UnityEngine.Random.Range(-2.0f, 2.0f));
+                    }
                 }
                 layers[i].getNeurons()[j].setWeights(layerWeight);
             }

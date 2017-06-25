@@ -13,14 +13,42 @@ public class LandBehaviour : StateMachineBehaviour {
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         
-        if (animator.gameObject.name == "Ninja")
+        if (animator.gameObject.name.Contains("Ninja"))
         {
-            if (Ninja.Instance.OnGround)
+            if (Ninja1.Instance.OnGround)
             {
                 animator.SetBool("land", false);
                 animator.ResetTrigger("jump");
             }
-            Ninja.Instance.Jump = false;
+            Ninja1.Instance.Jump = false;
+
+            if (Ninja2.Instance.OnGround)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            Ninja2.Instance.Jump = false;
+
+            if (Ninja3.Instance.OnGround)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            Ninja3.Instance.Jump = false;
+
+            if (Ninja4.Instance.OnGround)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            Ninja4.Instance.Jump = false;
+
+            /*if (Ninja.Instance.OnGround)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            Ninja.Instance.Jump = false;*/
         }
         else if(animator.gameObject.name == "Doggo")
         {

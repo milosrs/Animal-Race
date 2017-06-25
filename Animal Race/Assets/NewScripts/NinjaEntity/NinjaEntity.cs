@@ -16,7 +16,7 @@ public class NinjaEntity : MonoBehaviour {
     private NinjaAgent5 agent5;
     private NinjaAgent6 agent6;
     private NinjaAgent7 agent7;
-    private NinjaAgent8 agent8;
+    private NinjaAgent1 agent8;
 
 
 
@@ -25,7 +25,7 @@ public class NinjaEntity : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         genAlg = new GA();
-        int totalWeights = 6 * 6 + 4 * 6 + 4 * 4 + 3 * 4 + 17;
+        int totalWeights = 6 * 6 + 4 * 6 + 4 * 4 + 3 * 4 + 14;
         genAlg.GenerateNewGeneration(players.Length, totalWeights);
 
         NeuralNetwork nn1 = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
@@ -64,7 +64,7 @@ public class NinjaEntity : MonoBehaviour {
         nn7.toGenome(genAlg.getGenomeAt(6));
 
         NeuralNetwork nn8 = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
-        agent8 = players[7].GetComponent<NinjaAgent8>();
+        agent8 = players[7].GetComponent<NinjaAgent1>();
         agent8.AttachNet(nn8);
         nn8.toGenome(genAlg.getGenomeAt(7));
     }
@@ -86,19 +86,19 @@ public class NinjaEntity : MonoBehaviour {
             genAlg.getGenomeAt(6).fitness = agent7.GetFitness();
             genAlg.getGenomeAt(7).fitness = agent8.GetFitness();
 
-            //genAlg.BreedNewGeneration();
+            genAlg.BreedNewGeneration();
 
             //nakon kreiranja nove generacije uzmi nove tezine iz GA i zameni ih u neuronskim mrezama agenata
-            //agent1.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(0));
-            //agent2.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(1));
-            //agent3.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(2));
-            //agent4.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(3));
+            agent1.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(0));
+            agent2.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(1));
+            agent3.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(2));
+            agent4.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(3));
 
-            //agent5.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(4));
-            //agent6.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(5));
-            //agent7.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(6));
-            //agent8.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(7));
-
+            agent5.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(4));
+            agent6.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(5));
+            agent7.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(6));
+            agent8.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(7));
+            
             //pokreni sledecu generaciju
             agent1.StartAgain();
             agent2.StartAgain();

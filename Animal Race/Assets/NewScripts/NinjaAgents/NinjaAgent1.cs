@@ -75,7 +75,7 @@ public class NinjaAgent1 : MonoBehaviour {
             GetComponent<Ninja1>().CommandMe(commandL, commandR, commandU);
         }
 
-        if (timeAlive >= 20)
+        if (timeAlive >= 10)
         {
             failed = true;
         }

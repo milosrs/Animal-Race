@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class Ninja4 : MonoBehaviour {
 
-    private Rigidbody2D myRigidBody;
-    private Animator myAnimator;
+    //NINJAS RIGID BODY AND ANIMATOR
+    private Animator ninjaAnimator;
+    public Rigidbody2D NinjaBody { get; set; }
     private Agent agent;
 
+    //MOVEMENT AND CHARACTER FLIPPING
     [SerializeField]
-    private float movementSpeed;
+    public float movementSpeed;
+    private bool facingRight;
 
+    //JUMPING
     [SerializeField]
     private Transform[] groundPoints;
     [SerializeField]
@@ -19,46 +23,114 @@ public class Ninja4 : MonoBehaviour {
     private LayerMask whatsGround;
     [SerializeField]
     private float jumpForce;
+    [SerializeField]
+    private GameObject kunai;
 
+    //Special ability
     [SerializeField]
     private float fallMultiplier = 2.5f;
     [SerializeField]
     private float lowJumpMulti = 2f;
 
-    private bool jump;
-    private bool onGround;
+    //Properties
+    public bool Jump { get; set; }
+    public bool OnGround { get; set; }
+    public bool Throw { get; set; }
 
+    //Singleton
+    private static Ninja1 instance;
+    public static Ninja1 Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = GameObject.FindObjectOfType<Ninja1>();
+            }
+            return instance;
+        }
+    }
+
+    //How far did this character get?
     private float distance;
-    // Use this for initialization
+
+    //Background collision ignorer
+    public GameObject bg1, bg2;
+
     void Start()
     {
-        myRigidBody = GetComponent<Rigidbody2D>();
-        myAnimator = GetComponent<Animator>();
         agent = GetComponent<Agent>();
-    }
+        facingRight = true;
+        NinjaBody = GetComponent<Rigidbody2D>();
+        ninjaAnimator = GetComponent<Animator>();
+        /*Physics2D.IgnoreCollision(bg1.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+        Physics2D.IgnoreCollision(bg2.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+    */}
 
-    // Update is called once per frame
-    void FixedUpdate()
+    // Update is called once per frame, and it is not the correct way to move a character
+    void Update()
     {
-        HandleAnimation();
-        onGround = IsGrounded();
-    }
+        handleMovement();
+        OnGround = isGrounded();
+        /*Physics2D.IgnoreCollision(bg1.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+        Physics2D.IgnoreCollision(bg2.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+    */}
 
-    private void HandleAnimation()
+    //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
+    private void FixedUpdate()
     {
-        if (myRigidBody.velocity.y < 0)
-            myAnimator.SetBool("land", true);
-
-        //if (myRigidBody.velocity.x > 0 && ) //ovo radi flip 
+        handleLayers();
+        if (NinjaBody.velocity.y < 0)
         {
-
+            NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-
+        else if (NinjaBody.velocity.y > 0 && !Jump)
+        {
+            NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
+        }
     }
 
-    public bool IsGrounded()
+    private void handleMovement()
     {
-        if (myRigidBody.velocity.y <= 0)
+        if (NinjaBody.velocity.y < 0)
+        {
+            ninjaAnimator.SetBool("land", true);
+        }
+    }
+
+    private void flip(float horizontal)
+    {
+        Vector3 scale = transform.localScale;
+        if (horizontal > 0 && !facingRight)
+        {
+            facingRight = !facingRight;
+            scale.x *= -1;
+        }
+        else if (horizontal < 0 && facingRight)
+        {
+            facingRight = !facingRight;
+            scale.x *= -1;
+        }
+        transform.localScale = scale;
+    }
+
+    private void handleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump = true;
+            ninjaAnimator.SetTrigger("jump");
+        }
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            ninjaAnimator.SetTrigger("throw");
+            throwKunai(0);
+        }
+    }
+
+    private bool isGrounded()
+    {
+        if (NinjaBody.velocity.y <= 0)
         {
             foreach (Transform point in groundPoints)
             {
@@ -76,39 +148,55 @@ public class Ninja4 : MonoBehaviour {
         return false;
     }
 
+    private void handleLayers()
+    {
+        if (!OnGround)
+        {
+            ninjaAnimator.SetLayerWeight(1, 1);
+        }
+        else
+        {
+            ninjaAnimator.SetLayerWeight(0, 1);
+        }
+    }
+
+    private void throwKunai(int val)
+    {
+        if (facingRight)
+        {
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0, 0, -90)));
+            tmp.GetComponent<KunaiScript>().init(Vector2.right);
+        }
+        else
+        {
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0, 0, 90)));
+            tmp.GetComponent<KunaiScript>().init(Vector2.left);
+        }
+    }
+
     public void CommandMe(float l, float r, float u)
     {
         if (l > r)
         {
             if (transform.localScale.x < 0)
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            myRigidBody.velocity = new Vector2(l * movementSpeed, myRigidBody.velocity.y);
+            NinjaBody.velocity = new Vector2(l * movementSpeed, NinjaBody.velocity.y);
 
-            myAnimator.SetFloat("speed", Mathf.Abs(r));
+            ninjaAnimator.SetFloat("speed", Mathf.Abs(r));
         }
         else
         {
             if (transform.localScale.x > 0)
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            myRigidBody.velocity = new Vector2(r * movementSpeed, myRigidBody.velocity.y);
+            NinjaBody.velocity = new Vector2(r * movementSpeed, NinjaBody.velocity.y);
 
-            myAnimator.SetFloat("speed", Mathf.Abs(l));
+            ninjaAnimator.SetFloat("speed", Mathf.Abs(l));
         }
-
-        //al ako je skok veci od levo ili desno onda dodaj jos skok na stranu na koju treba skociti
-        if (u > l && u > r && myRigidBody.velocity.y == 0)
+        if (u > l && u > r && NinjaBody.velocity.y == 0)
         {
-            myRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            myAnimator.SetTrigger("jump");
+            NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            ninjaAnimator.SetTrigger("jump");
         }
-    }
-
-    private void HandleLayers()
-    {
-        if (!onGround)
-            myAnimator.SetLayerWeight(1, 1);
-        else
-            myAnimator.SetLayerWeight(0, 1);
     }
 
     public Agent getAgent()

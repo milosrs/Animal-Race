@@ -9,7 +9,7 @@ public class DestroyerScript : MonoBehaviour {
         if (collision.gameObject.tag=="Player")
         {
             Agent a = collision.gameObject.GetComponent<Agent>();
-            a.setFail(true);
+            a.SetFail(true);
         }
         if(collision.transform.gameObject)
         {

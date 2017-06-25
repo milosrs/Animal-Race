@@ -30,7 +30,7 @@ public class NeuralLayer{
                 activation += input[inputIndex] * neurons[i].weights[j];
                 inputIndex++;
             }
-            activation -= neurons[i].weights[neurons[i].getNumberOfInputs()];
+            activation -= neurons[i].weights[neurons[i].getNumberOfInputs()-1];
             output.Add(Neuron.Sigmoid(activation));
             inputIndex = 0;
         }

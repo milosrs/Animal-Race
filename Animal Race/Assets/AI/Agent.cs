@@ -26,23 +26,29 @@ public class Agent : MonoBehaviour{
     //Komande
     private float u, l, r, ur, dr, ddr;
 
+    private float distanceCoeficient = 2.0f;
+    private float timeAliveCoeficient = 1.0f;
 
     private Vector3 startPosition;
 
-    private void Awake()
+    private float fitness;
+
+    // Use this for initialization
+    void Awake()
     {
         hits = new List<RaycastHit2D>();
         distances = new List<float>();
-        playerBody = player.GetComponent<Rigidbody2D>();
+        playerBody = GetComponent<Rigidbody2D>();
         failed = false;
-        startPosition = player.transform.position;
-    }
-    
-    private void FixedUpdate()
-    {
-        isFailed();
-        castSensors();
 
+        startPosition = transform.position; //pocetna pozicija karaktera da bi ga nakon padanja mogli vratiti na istu pocetnu poziciju 
+    }
+
+    // Update is called once per frame
+    /*void FixedUpdate()
+    {
+
+        CastSensors();
         u = distances[0];
         l = distances[1];
         r = distances[2];
@@ -50,7 +56,13 @@ public class Agent : MonoBehaviour{
         dr = distances[4];
         ddr = distances[5];
 
-        if (!failed)
+        IsFailed();
+
+        if (failed)
+        {
+            KillMe();
+        }
+        else
         {
             timeAlive += Time.deltaTime;    //Kada ovo dodje do 200, failed = true
             List<float> inputs = new List<float>();
@@ -61,23 +73,21 @@ public class Agent : MonoBehaviour{
             inputs.Add(Normalise(dr));
             inputs.Add(Normalise(ddr));
 
-            nn.setInput(inputs);
+            //nn.setInput(inputs);
             nn.refreshNetwork();
 
             commandL = nn.getOutput(0);
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
 
-            player.GetComponent<Ninja>().commandMe(commandL, commandR, commandU);
+            GetComponent<Ninja1>().CommandMe(commandL, commandR, commandU);
         }
-        if (timeAlive >= 20)
+
+        if (timeAlive >= 10)
         {
-            failed = true;                 //Yes
-            timeAlive = 0;
+            failed = true;
         }
-        Debug.Log("Time alive = " + timeAlive);
-        
-    }
+    }*/
 
     public float Normalise(float i)
     {
@@ -85,9 +95,9 @@ public class Agent : MonoBehaviour{
         return 1 - depth;
     }
 
-    private void castSensors()
+    private void CastSensors()
     {
-        for(int i=0; i<sensorEnd.Length; i++)
+        for (int i = 0; i < sensorEnd.Length; i++)
         {
             RaycastHit2D result = Physics2D.Linecast(new Vector2(sensorStart[i].transform.position.x, sensorStart[i].transform.position.y), new Vector2(sensorEnd[i].transform.position.x, sensorEnd[i].transform.position.y));
             hits.Add(result);
@@ -96,37 +106,60 @@ public class Agent : MonoBehaviour{
         }
     }
 
-    public void attachNet(NeuralNetwork nn)
+    public void AttachNet(NeuralNetwork nn)
     {
         this.nn = nn;
     }
 
-    public bool getFail()
+    public void IsFailed()
+    {
+        if (transform.position.y < -5)
+            failed = true;
+        else
+            failed = false;
+    }
+
+    public void KillMe() //kada padne karakter onda ga u ovo stanje stavljamo
+    {
+        //sracunaj fitness
+        CalculateFitness();
+        gameObject.SetActive(false); //iskljuci lika sa mape dok se ne sracuna fitnes i dok ne dobije bolju neuronsku
+    }
+
+    public void StartAgain() //kada mu promenimo mrezu,vratimo ga na pocetak izo ovog stanja
+    {
+        //respawnuj karaktera na pocetak
+        //pusti ga da radi sta inace radi
+        transform.position = startPosition;
+        fitness = 0.0f;
+        gameObject.SetActive(true);
+        timeAlive = 0;
+    }
+
+    public bool GetFailed()
     {
         return failed;
     }
 
-    public void setFail(bool f)
+    public void SetFail(bool fail)
     {
-        failed = f;
+        failed = fail;
     }
 
-    public void ClearFailure()
+    public void CalculateFitness()
     {
-        failed = false;
-        Ninja.Instance.setDistance(0.0f);
+        //menhetn rastojanje od pocetne tacke pa do tacke gde je pao
+        float dist = Mathf.Abs(startPosition.x - transform.position.x) + Mathf.Abs(startPosition.y - transform.position.y);
+        fitness = timeAlive * timeAliveCoeficient + dist * distanceCoeficient;
     }
 
-    public void isFailed()
+    public float GetFitness()
     {
-        if (player.transform.localPosition.y < -5)
-        {
-            failed = true;
-            playerBody.gravityScale = 0;
+        return fitness;
+    }
 
-            player.transform.localPosition = new Vector3(startPosition.x, startPosition.y, startPosition.z);
-
-        
-        }
+    public NeuralNetwork getNeuralNetwork()
+    {
+        return nn;
     }
 }
