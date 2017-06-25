@@ -26,18 +26,21 @@ public class Agent : MonoBehaviour{
     //Komande
     private float u, l, r, ur, dr, ddr;
 
+
+    private Vector3 startPosition;
+
     private void Awake()
     {
         hits = new List<RaycastHit2D>();
         distances = new List<float>();
         playerBody = player.GetComponent<Rigidbody2D>();
-        
         failed = false;
-        nn = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
+        startPosition = player.transform.position;
     }
     
     private void FixedUpdate()
     {
+        isFailed();
         castSensors();
 
         u = distances[0];
@@ -65,22 +68,7 @@ public class Agent : MonoBehaviour{
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
 
-            if (player.name == "Ninja")
-            {
-                Ninja.Instance.commandMe(commandL, commandR, commandU);
-            }
-            else if (player.name == "Doggo")
-            {
-                DoggoScript.Instance.commandMe(commandL, commandR, commandU);
-            }
-            else if (player.name == "Squirrel")
-            {
-                SquirrelScript.Instance.commandMe(commandL, commandR, commandU);
-            }
-            else if (player.name == "Dragon")
-            {
-                DragonScript.Instance.commandMe(commandL, commandR, commandU);
-            }
+            player.GetComponent<Ninja>().commandMe(commandL, commandR, commandU);
         }
         if (timeAlive >= 20)
         {
@@ -127,5 +115,18 @@ public class Agent : MonoBehaviour{
     {
         failed = false;
         Ninja.Instance.setDistance(0.0f);
+    }
+
+    public void isFailed()
+    {
+        if (player.transform.localPosition.y < -5)
+        {
+            failed = true;
+            playerBody.gravityScale = 0;
+
+            player.transform.localPosition = new Vector3(startPosition.x, startPosition.y, startPosition.z);
+
+        
+        }
     }
 }

@@ -11,7 +11,7 @@ public class Ninja : MonoBehaviour {
 
     //MOVEMENT AND CHARACTER FLIPPING
     [SerializeField]
-    private float movementSpeed;
+    public float movementSpeed;
     private bool facingRight;
 
     //JUMPING
@@ -69,7 +69,7 @@ public class Ninja : MonoBehaviour {
     // Update is called once per frame, and it is not the correct way to move a character
     void Update()
     {
-        handleInput();
+        handleMovement();
         OnGround = isGrounded();
         Physics2D.IgnoreCollision(bg1.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
         Physics2D.IgnoreCollision(bg2.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
@@ -78,35 +78,23 @@ public class Ninja : MonoBehaviour {
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
     private void FixedUpdate()
     {
-        float horizontal = Input.GetAxis("Horizontal");
         handleLayers();
-        handleMovement(horizontal);
-        flip(horizontal);
         if (NinjaBody.velocity.y < 0)
         {
             NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (NinjaBody.velocity.y > 0 && !Input.GetButton("Jump"))
+        else if (NinjaBody.velocity.y > 0 && !Jump)
         {
             NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
         }
     }
 
-    private void handleMovement(float horizontal)
+    private void handleMovement()
     {
         if (NinjaBody.velocity.y < 0)
         {
             ninjaAnimator.SetBool("land",true);
         }
-        
-        NinjaBody.velocity = new Vector2(horizontal * movementSpeed, NinjaBody.velocity.y);
-        
-        if (Jump && OnGround)
-        {
-            NinjaBody.AddForce(Vector2.up*jumpForce, ForceMode2D.Impulse);
-
-        }
-        ninjaAnimator.SetFloat("speed", Mathf.Abs(horizontal));
     }
 
     private void flip(float horizontal)
@@ -188,20 +176,26 @@ public class Ninja : MonoBehaviour {
     {
         if(l > r && l > u)
         {
-            l = -1;
-            flip(l);
-            handleMovement(l);
+
+            if (transform.localScale.x < 0)
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            NinjaBody.velocity = new Vector2(l * movementSpeed, NinjaBody.velocity.y);
+
+            ninjaAnimator.SetFloat("speed", Mathf.Abs(r));
         }
         else if(r > l && r > u)
         {
-            r = 1;
-            flip(r);
-            handleMovement(r);
+            if (transform.localScale.x > 0)
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            NinjaBody.velocity = new Vector2(r * movementSpeed, NinjaBody.velocity.y);
+
+            ninjaAnimator.SetFloat("speed", Mathf.Abs(l));
         }
         else if (u > l && u > r && NinjaBody.velocity.y == 0)
         {
-            Jump = true;
+            NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             ninjaAnimator.SetTrigger("jump");
+
         }
     }
 

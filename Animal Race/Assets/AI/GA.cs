@@ -293,4 +293,9 @@ public class GA {
             generation[index].fitness = fitness;
         }
     }
+
+    public Genome getGenomeAt(int index)
+    {
+        return generation[index];
+    }
 }

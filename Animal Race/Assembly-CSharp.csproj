@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\AI\Agent.cs" />
+     <Compile Include="Assets\AI\Entity.cs" />
      <Compile Include="Assets\AI\GA.cs" />
      <Compile Include="Assets\AI\Genome.cs" />
      <Compile Include="Assets\AI\NeuralLayer.cs" />
@@ -56,6 +57,15 @@
      <Compile Include="Assets\Characters\Doggo\Scripts\DoggoScript.cs" />
      <Compile Include="Assets\Characters\Dragon\Scripts\DragonScript.cs" />
      <Compile Include="Assets\Characters\Squirrel\Scripts\SquirrelScript.cs" />
+     <Compile Include="Assets\NewScripts\NinjaAgents\NinjaAgent1.cs" />
+     <Compile Include="Assets\NewScripts\NinjaAgents\NinjaAgent2.cs" />
+     <Compile Include="Assets\NewScripts\NinjaAgents\NinjaAgent3.cs" />
+     <Compile Include="Assets\NewScripts\NinjaAgents\NinjaAgent4.cs" />
+     <Compile Include="Assets\NewScripts\NinjaEntity\NinjaEntity.cs" />
+     <Compile Include="Assets\NewScripts\NinjaScripts\Ninja1.cs" />
+     <Compile Include="Assets\NewScripts\NinjaScripts\Ninja2.cs" />
+     <Compile Include="Assets\NewScripts\NinjaScripts\Ninja3.cs" />
+     <Compile Include="Assets\NewScripts\NinjaScripts\Ninja4.cs" />
      <Compile Include="Assets\Prefab\BackgroundScript.cs" />
      <Compile Include="Assets\Scripts\CamScript.cs" />
      <Compile Include="Assets\Scripts\DestroyerScript.cs" />
