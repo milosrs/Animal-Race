@@ -6,11 +6,9 @@ public class GA {
 
     private List<Genome> generation;
     private int currentGeneration;
-    private int currentGenome;
     private float mutationRate;
 
     private float maxPermutation;
-    private int genomeID;
     private int totalPopulation;
     private int totalWeights;
 
@@ -43,7 +41,7 @@ public class GA {
         Genome best = generation[0];
         for (int i = 1; i < generation.Count; i++)
         {
-            if (best.fitness < generation[i].fitness)
+            if (best.fitness <= generation[i].fitness)
                 best = generation[i];
         }
         return best;
@@ -57,7 +55,7 @@ public class GA {
         Genome worst = generation[0];
         for (int i = 1; i < generation.Count; i++)
         {
-            if (worst.fitness > generation[i].fitness)
+            if (worst.fitness >= generation[i].fitness)
                 worst = generation[i];
         }
         return worst;
@@ -126,11 +124,6 @@ public class GA {
     public void CrossBreed(Genome parent1, Genome parent2,ref Genome baby1, ref Genome baby2)
     {
         int singlePoint = Mathf.CeilToInt(Randomize(0.0f, totalWeights));
-
-        baby1.ID = genomeID;
-        genomeID++;
-        baby2.ID = genomeID;
-        genomeID++;
 
         for (int i = 0; i < totalWeights; i++)
         {
@@ -209,14 +202,12 @@ public class GA {
         generation.Clear();
 
         currentGeneration = 1;
-        currentGenome = -1;
         totalPopulation = numOfGenomes;
         totalWeights = numOfWeights;
 
         for (int i = 0; i < totalPopulation; i++)
         {
             Genome g = new Genome();
-            g.ID = genomeID;
             g.fitness = 0.0f;
             g.weights = new List<float>();
             for (int j = 0; j < totalWeights; j++)
@@ -224,7 +215,6 @@ public class GA {
                 g.weights.Add(Randomize(-2.0f, 2.0f));
             }
             generation.Add(g);
-            genomeID++;
         }
     }
 
@@ -240,7 +230,6 @@ public class GA {
     public Genome CreateNewGenome(int totalWeights)
     {
         Genome genome = new Genome();
-        genome.ID = genomeID;
         genome.fitness = 0.0f;
         genome.weights = new List<float>();
         //resize
@@ -254,7 +243,6 @@ public class GA {
             genome.weights[j] = Randomize(-2.0f, 2.0f) - Randomize(-2.0f, 2.0f);
         }
 
-        genomeID++;
         return genome;
     }
 
@@ -265,21 +253,6 @@ public class GA {
             generation[i] = null;
         }
         generation.Clear();
-    }
-
-    public Genome getNextGenome()
-    {
-        currentGenome++;
-        if(currentGenome > generation.Count)
-        {
-            return null;
-        }
-        return generation[currentGenome];
-    }
-    
-    public int getCurrentGenomeIndex()
-    {
-        return currentGenome;
     }
 
     public void setGenomeFitness(float fitness, int index)

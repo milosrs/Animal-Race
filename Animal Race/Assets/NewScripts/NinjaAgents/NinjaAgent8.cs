@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NinjaAgent3 : MonoBehaviour {
+public class NinjaAgent8 : MonoBehaviour {
+
 
     private bool failed;
     private float distanceDelta, distance, timeAlive;
@@ -74,7 +75,7 @@ public class NinjaAgent3 : MonoBehaviour {
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
 
-            GetComponent<Ninja3>().CommandMe(commandL, commandR, commandU);
+            GetComponent<Ninja8>().CommandMe(commandL, commandR, commandU);
         }
 
         if (timeAlive >= 20)

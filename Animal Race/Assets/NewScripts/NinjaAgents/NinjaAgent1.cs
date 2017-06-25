@@ -22,6 +22,11 @@ public class NinjaAgent1 : MonoBehaviour {
 
     private Vector3 startPosition;
 
+    private float fitness;
+
+    private float distanceCoeficient = 2.0f;
+    private float timeAliveCoeficient = 1.0f;
+
 	// Use this for initialization
 	void Awake () {
         hits = new List<RaycastHit2D>();
@@ -73,7 +78,6 @@ public class NinjaAgent1 : MonoBehaviour {
         if (timeAlive >= 20)
         {
             failed = true;
-            timeAlive = 0;
         }
 	}
 
@@ -109,8 +113,9 @@ public class NinjaAgent1 : MonoBehaviour {
 
     public void KillMe() //kada padne karakter onda ga u ovo stanje stavljamo
     {
-        gameObject.SetActive(false);
-        //dodati jos da se ne vidi na mapi kad umre. da se pojavi tek iz startagain
+        //sracunaj fitness
+        CalculateFitness();
+        gameObject.SetActive(false); //iskljuci lika sa mape dok se ne sracuna fitnes i dok ne dobije bolju neuronsku
     }
 
     public void StartAgain() //kada mu promenimo mrezu,vratimo ga na pocetak izo ovog stanja
@@ -118,11 +123,30 @@ public class NinjaAgent1 : MonoBehaviour {
         //respawnuj karaktera na pocetak
         //pusti ga da radi sta inace radi
         transform.position = startPosition;
+        fitness = 0.0f;
         gameObject.SetActive(true);
+        timeAlive = 0;
     }
 
     public bool GetFailed()
     {
         return failed;
+    }
+
+    public void CalculateFitness()
+    {
+        //menhetn rastojanje od pocetne tacke pa do tacke gde je pao
+        float dist = Mathf.Abs(startPosition.x - transform.position.x) + Mathf.Abs(startPosition.y - transform.position.y);
+        fitness = timeAlive * timeAliveCoeficient + dist * distanceCoeficient;
+    }
+
+    public float GetFitness()
+    {
+        return fitness;
+    }
+
+    public NeuralNetwork getNeuralNetwork()
+    {
+        return nn;
     }
 }
