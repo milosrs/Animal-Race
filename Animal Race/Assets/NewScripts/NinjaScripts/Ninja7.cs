@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ninja7 : MonoBehaviour {
+public class Ninja7 : MonoBehaviour
+{
 
     private Rigidbody2D myRigidBody;
     private Animator myAnimator;
@@ -25,8 +26,8 @@ public class Ninja7 : MonoBehaviour {
     [SerializeField]
     private float lowJumpMulti = 2f;
 
-    private bool jump;
-    private bool onGround;
+    public bool Jump { get; set; }
+    public bool OnGround { get; set; }
 
     private float distance;
     // Use this for initialization
@@ -41,7 +42,7 @@ public class Ninja7 : MonoBehaviour {
     void FixedUpdate()
     {
         HandleAnimation();
-        onGround = IsGrounded();
+        OnGround = IsGrounded();
     }
 
     private void HandleAnimation()
@@ -105,7 +106,7 @@ public class Ninja7 : MonoBehaviour {
 
     private void HandleLayers()
     {
-        if (!onGround)
+        if (!OnGround)
             myAnimator.SetLayerWeight(1, 1);
         else
             myAnimator.SetLayerWeight(0, 1);
@@ -129,5 +130,13 @@ public class Ninja7 : MonoBehaviour {
     public void setAgent(Agent agent)
     {
         this.agent = agent;
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), collision.gameObject.GetComponent<Collider2D>(), true);
+        }
     }
 }

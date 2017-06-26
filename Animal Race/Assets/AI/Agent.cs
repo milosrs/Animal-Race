@@ -28,7 +28,7 @@ public class Agent : MonoBehaviour{
     private float distanceCoeficient = 2.0f;
     private float timeAliveCoeficient = 1.0f;
 
-    private Vector3 startPosition;
+    private Vector2 startPosition;
 
     private float fitness;
 
@@ -171,5 +171,8 @@ public class Agent : MonoBehaviour{
         return nn;
     }
 
-    
+    public Vector2 getStartPosition()
+    {
+        return this.startPosition;
+    }
 }

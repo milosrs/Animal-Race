@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ninja : MonoBehaviour
+public class NinjaOLDSCRIPT : MonoBehaviour
 {
 
     //NINJAS RIGID BODY AND ANIMATOR
@@ -77,7 +77,7 @@ public class Ninja : MonoBehaviour
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
     private void FixedUpdate()
     {
-        if (this.enabled)
+        if (this.isActiveAndEnabled)
         {
             handleLayers();
             handleMovement(horizontal);
@@ -90,10 +90,6 @@ public class Ninja : MonoBehaviour
             {
                 NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
             }
-        }
-        else
-        {
-            Debug.Log(this.gameObject.name + " is disabled.");
         }
     }
 

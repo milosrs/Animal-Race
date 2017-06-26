@@ -113,6 +113,7 @@
     <Compile Include="Assets\Scripts\KunaiScript.cs" />
     <Compile Include="Assets\Scripts\LandBehaviour.cs" />
     <Compile Include="Assets\Scripts\Ninja.cs" />
+    <Compile Include="Assets\Scripts\NinjaOLDSCRIPT.cs" />
     <Compile Include="Assets\Scripts\SensorScript.cs" />
     <Compile Include="Assets\Scripts\SpawnerScript.cs" />
     <Compile Include="Assets\Scripts\ThrowBehaviour.cs" />

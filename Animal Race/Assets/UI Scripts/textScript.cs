@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class textScript : MonoBehaviour {
 
+    /*
     [SerializeField]
     private GameObject entityHolder;
     private GA ga;
@@ -41,5 +42,5 @@ public class textScript : MonoBehaviour {
             text.text += "--Ninja details--\nCurrent generation: "+current_generation;
             text.text += "\nBest fitness ever: " + bestFit;
         }
-	}
+	}*/
 }

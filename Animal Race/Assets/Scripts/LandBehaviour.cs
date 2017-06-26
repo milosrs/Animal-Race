@@ -22,35 +22,6 @@ public class LandBehaviour : StateMachineBehaviour {
                 animator.ResetTrigger("jump");
             }
             n.Jump = false;
-
-            /*if (Ninja1.Instance.OnGround)
-            {
-                animator.SetBool("land", false);
-                animator.ResetTrigger("jump");
-            }
-            Ninja1.Instance.Jump = false;
-
-            if (Ninja2.Instance.OnGround)
-            {
-                animator.SetBool("land", false);
-                animator.ResetTrigger("jump");
-            }
-            Ninja2.Instance.Jump = false;
-
-            if (Ninja3.Instance.OnGround)
-            {
-                animator.SetBool("land", false);
-                animator.ResetTrigger("jump");
-            }
-            Ninja3.Instance.Jump = false;
-
-            if (Ninja4.Instance.OnGround)
-            {
-                animator.SetBool("land", false);
-                animator.ResetTrigger("jump");
-            }
-            Ninja4.Instance.Jump = false;
-            */
         }
     
         else if(animator.gameObject.name == "Doggo")

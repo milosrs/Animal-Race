@@ -13,26 +13,24 @@ public class CamScript : MonoBehaviour {
     private List<DragonScript> dragons;
 
     private Rigidbody2D[] bodies;
-    private float yMin = -15f ,yMax = 15f;
-    //Eine hack bitte
-    private string namez;
 
 	// Use this for initialization
 	void Awake () {
-        namez = "";
         if (player.name.Contains("Ninja"))
         {
-            namez = "Ninja";
             ninjas = new List<Ninja>();
             Ninja[] scripts = player.GetComponentsInChildren<Ninja>();
             bodies = new Rigidbody2D[scripts.Length];
 
-            int i = 0;
-            foreach(Ninja n in scripts)
+            if (scripts != null)
             {
-                ninjas.Add(n);
-                bodies[i] = n.GetComponent<Rigidbody2D>();
-                i++;
+                int i = 0;
+                foreach (Ninja n in scripts)
+                {
+                    ninjas.Add(n);
+                    bodies[i] = n.GetComponent<Rigidbody2D>();
+                    i++;
+                }
             }
         }
         else
@@ -43,24 +41,26 @@ public class CamScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        if (namez.Equals("Ninja"))
+	void FixedUpdate () {
+        //transform.position = new Vector3(player.transform.position.x + 7, 0, -10);
+        if (player.name.Contains("Ninja"))
         {
             float maxFit = 0.0f;
             int maxInd = -1;
             int i = 0;
             foreach (Ninja n in ninjas)
             {
-                if (n.getAgent().GetFitness() > maxFit && n.getAgent().GetFailed()!=true && n.isActiveAndEnabled==true)
+                if (n.getAgent().GetFitness() > maxFit && n.getAgent().GetFailed()!=true && n.isActiveAndEnabled)
                 {
                     maxFit = n.getAgent().GetFitness();
                     maxInd = i;
                 }
                 i++;
             }
-            if(maxInd>-1)
-             transform.position = new Vector3(bodies[maxInd].position.x + 7, 0, -10);
-
+            if(maxInd>-1 && ninjas[maxInd].isActiveAndEnabled)
+                transform.position = new Vector3(bodies[maxInd].position.x + 7, 0, -10);
+            else if(ninjas.Count > 0)
+                transform.position = new Vector3(ninjas[0].getAgent().getStartPosition().x, 0, -10);
             Debug.Log("Fittest:" + maxFit);
         }
         else
