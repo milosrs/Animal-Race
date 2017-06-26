@@ -20,8 +20,7 @@ public class Agent : MonoBehaviour{
     public GameObject[] sensorEnd;
     public GameObject player;
 
-    //Igracevo telo
-    private Rigidbody2D playerBody;
+    //Igraceve komande
     private float commandL, commandR, commandU;
     //Komande
     private float u, l, r, ur, dr, ddr;
@@ -38,7 +37,6 @@ public class Agent : MonoBehaviour{
     {
         hits = new List<RaycastHit2D>();
         distances = new List<float>();
-        playerBody = GetComponent<Rigidbody2D>();
         failed = false;
 
         startPosition = transform.position; //pocetna pozicija karaktera da bi ga nakon padanja mogli vratiti na istu pocetnu poziciju 

@@ -9,7 +9,6 @@ public class SpawnerScript : MonoBehaviour {
     public float spawnMax = 20f;
     private Rigidbody2D now;
     private float lastX;
-    private bool canSpawn;
     
 
     // Use this for initialization
@@ -19,7 +18,6 @@ public class SpawnerScript : MonoBehaviour {
             now = GetComponent<Rigidbody2D>();
             lastX = now.position.x;
             Spawn();
-            canSpawn = false;
         }
         else
         {

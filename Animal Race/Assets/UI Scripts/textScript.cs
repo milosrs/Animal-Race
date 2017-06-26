@@ -17,12 +17,29 @@ public class textScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        float bestFit = ga.GetBest().fitness;
-        int current_generation = ga.getGeneration();
-        Text text = this.gameObject.GetComponent<Text>();
-        if (entityHolder.GetComponent<NinjaEntity>() != null)
+        float bestFit = 0;
+        try
+        {
+            bestFit = ga.GetBest().fitness;
+        }
+        catch
         {
 
+        }
+        int current_generation = 1;
+        try
+        {
+            current_generation = ga.getGeneration();
+        }
+        catch
+        {
+
+        }
+        Text text = this.gameObject.GetComponent<Text>();
+        if (entityHolder.GetComponent<NinjaEntity>() != null && text!=null)
+        {
+            text.text += "--Ninja details--\nCurrent generation: "+current_generation;
+            text.text += "\nBest fitness ever: " + bestFit;
         }
 	}
 }

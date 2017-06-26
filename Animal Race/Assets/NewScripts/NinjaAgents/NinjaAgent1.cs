@@ -15,7 +15,7 @@ public class NinjaAgent1 : MonoBehaviour {
     public GameObject[] sensorStart;    //UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWNERRIGHT, LEFT
     public GameObject[] sensorEnd;
 
-    private Rigidbody2D playerBody;
+
     private float commandL, commandR, commandU;
     
     private float u, l, r, ur, dr, ddr;
@@ -31,7 +31,6 @@ public class NinjaAgent1 : MonoBehaviour {
 	void Awake () {
         hits = new List<RaycastHit2D>();
         distances = new List<float>();
-        playerBody = GetComponent<Rigidbody2D>();
         failed = false;
 
         startPosition = transform.position; //pocetna pozicija karaktera da bi ga nakon padanja mogli vratiti na istu pocetnu poziciju 
