@@ -38,65 +38,41 @@ public class Ninja : MonoBehaviour
     public bool OnGround { get; set; }
     public bool Throw { get; set; }
 
-    //Singleton
-    private static Ninja instance;
-    public static Ninja Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = GameObject.FindObjectOfType<Ninja>();
-            }
-            return instance;
-        }
-    }
-
     //How far did this character get?
     private float distance;
     private float horizontal;
 
-    //Background collision ignorer
-    public GameObject bg1, bg2;
-
     void Start()
     {
         horizontal = 0;
-        agent = GetComponent<Agent>();
         facingRight = true;
+        agent = GetComponent<Agent>();
         NinjaBody = GetComponent<Rigidbody2D>();
         ninjaAnimator = GetComponent<Animator>();
-    }
-
-    // Update is called once per frame, and it is not the correct way to move a character
-    void Update()
-    {
-        OnGround = isGrounded();
     }
 
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
     private void FixedUpdate()
     {
-        if (this.enabled)
+        OnGround = isGrounded();
+        handleLayers();
+        
+        if (NinjaBody.velocity.y < 0)
         {
-            handleLayers();
-            handleMovement(horizontal);
-            flip(horizontal);
-            if (NinjaBody.velocity.y < 0)
-            {
-                NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
-            }
-            else if (NinjaBody.velocity.y > 0/* && !Input.GetButton("Jump")*/)
-            {
-                NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
-            }
+            ninjaAnimator.SetBool("land", true);
+            NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else
+        else if (NinjaBody.velocity.y > 0/* && !Input.GetButton("Jump")*/)
         {
-            Debug.Log(this.gameObject.name + " is disabled.");
+            NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
         }
+
     }
 
+    /// <summary>
+    /// Ova funkcija pravi probleme
+    /// </summary>
+    /// <param name="horizontal"></param>
     private void handleMovement(float horizontal)
     {
         if (NinjaBody.velocity.y < 0)
@@ -109,9 +85,9 @@ public class Ninja : MonoBehaviour
         if (Jump && OnGround)
         {
             NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-
         }
         ninjaAnimator.SetFloat("speed", Mathf.Abs(horizontal));
+        flip(horizontal);
     }
 
     private void flip(float horizontal)
@@ -130,7 +106,7 @@ public class Ninja : MonoBehaviour
         transform.localScale = scale;
     }
 
-    private void handleInput()
+    /*private void handleInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -142,7 +118,7 @@ public class Ninja : MonoBehaviour
             ninjaAnimator.SetTrigger("throw");
             throwKunai(0);
         }
-    }
+    }*/
 
     private bool isGrounded()
     {
@@ -176,7 +152,7 @@ public class Ninja : MonoBehaviour
         }
     }
 
-    private void throwKunai(int val)
+    /*private void throwKunai(int val)
     {
         if (facingRight)
         {
@@ -189,17 +165,38 @@ public class Ninja : MonoBehaviour
             tmp.GetComponent<KunaiScript>().init(Vector2.left);
         }
     }
+    */
 
+    /// <summary>
+    /// Problem je bio u handleMovement funkciji koja se poziva na update, a likovi nisu aktivni.
+    /// prvi if-else proveri da li se krecemo levo ili desno, pa na osnovu toga pozivamo 
+    /// handleMovement funkciju
+    /// </summary>
     public void commandMe(float l, float r, float u)
     {
+        Vector3 scale = transform.localScale;
         if (l > r)
         {
-            horizontal = -l;
+            if (facingRight)
+            {
+                facingRight = !facingRight;
+                scale.x *= -1;
+            }
+            NinjaBody.velocity = new Vector2(l * movementSpeed, NinjaBody.velocity.y);
+            ninjaAnimator.SetFloat("speed", Mathf.Abs(l));
         }
         else
         {
-            horizontal = r;
+            if (!facingRight)
+            {
+                facingRight = !facingRight;
+                scale.x *= -1;
+            }
+            NinjaBody.velocity = new Vector2(r * movementSpeed, NinjaBody.velocity.y);
+            ninjaAnimator.SetFloat("speed", Mathf.Abs(r));
         }
+
+        //al ako je skok veci od levo ili desno onda dodaj jos skok na stranu na koju treba skociti
         if (u > l && u > r && NinjaBody.velocity.y == 0)
         {
             NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
@@ -228,5 +225,15 @@ public class Ninja : MonoBehaviour
         {
             Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), collision.gameObject.GetComponent<Collider2D>(), true);
         }
+    }
+
+    public float getHorizontal()
+    {
+        return horizontal;
+    }
+
+    public void setHorizontal(float h)
+    {
+        horizontal = h;
     }
 }

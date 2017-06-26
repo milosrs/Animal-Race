@@ -50,6 +50,7 @@ public class NinjaEntity : MonoBehaviour {
                 agents[i].getNeuralNetwork().fromGenome(genAlg.getGenomeAt(i));
                 agents[i].StartAgain();
             }
+            Debug.Log("Generation: "+genAlg.getGeneration());
         }
 	}
 

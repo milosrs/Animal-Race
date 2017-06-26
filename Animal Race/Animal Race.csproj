@@ -112,6 +112,10 @@
     <Compile Include="Assets\Scripts\Idle.cs" />
     <Compile Include="Assets\Scripts\KunaiScript.cs" />
     <Compile Include="Assets\Scripts\LandBehaviour.cs" />
+    <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
+    <Compile Include="Assets\Scripts\NewBehaviourScript1.cs" />
+    <Compile Include="Assets\Scripts\NewBehaviourScript2.cs" />
+    <Compile Include="Assets\Scripts\NewBehaviourScript3.cs" />
     <Compile Include="Assets\Scripts\Ninja.cs" />
     <Compile Include="Assets\Scripts\NinjaOLDSCRIPT.cs" />
     <Compile Include="Assets\Scripts\SensorScript.cs" />

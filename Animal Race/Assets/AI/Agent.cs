@@ -57,6 +57,7 @@ public class Agent : MonoBehaviour{
 
         if (failed)
         {
+            ((Ninja)player.gameObject.GetComponent<Ninja>()).setHorizontal(0f);
             KillMe();
         }
         else
