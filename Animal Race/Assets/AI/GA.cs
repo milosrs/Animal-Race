@@ -1,7 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
+[Serializable]
 public class GA {
 
     private List<Genome> generation;
@@ -212,7 +217,7 @@ public class GA {
             {
                 for (int i = 0; i < remaining; i++)
                 {
-                    int addMe = Mathf.CeilToInt(Random.Range(0, bestGenoms.Count - 1));
+                    int addMe = Mathf.CeilToInt(UnityEngine.Random.Range(0, bestGenoms.Count - 1));
                     if (newPopulation.Contains(bestGenoms[addMe]))
                     {
                         newPopulation.Add(CreateNewGenome(GetBest().weights.Count));
@@ -259,7 +264,7 @@ public class GA {
 
     public float Randomize(float min, float max)                     //Random tezine na pocetku
     {
-        float rand = Random.Range(min, max);
+        float rand = UnityEngine.Random.Range(min, max);
         return rand;
     }
 
@@ -314,5 +319,35 @@ public class GA {
     public int getGeneration()
     {
         return currentGeneration;
+    }
+
+    public void Load()
+    {
+        IFormatter formatter = new BinaryFormatter();
+        Stream stream = new FileStream("savedData.bin",
+                                  FileMode.Open,
+                                  FileAccess.Read,
+                                  FileShare.Read);
+        GA obj = (GA)formatter.Deserialize(stream);
+        stream.Close();
+
+        this.generation = obj.generation;
+        this.currentGeneration = obj.currentGeneration;
+        this.mutationRate = obj.mutationRate;
+
+        this.maxPermutation = obj.maxPermutation;
+        this.totalPopulation = obj.totalPopulation;
+        this.totalWeights = obj.totalWeights;
+    }
+
+    public void Save()
+    {
+        IFormatter formatter = new BinaryFormatter();
+        Stream stream = new FileStream("savedData.bin",
+                                 FileMode.Create,
+                                 FileAccess.Write, FileShare.None);
+        formatter.Serialize(stream, this);
+        stream.Close();
+    
     }
 }

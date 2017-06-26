@@ -19,12 +19,31 @@ public class NinjaEntity : MonoBehaviour {
         int totalWeights = 6 * 6 + 4 * 6 + 4 * 4 + 3 * 4 + 14;
         genAlg.GenerateNewGeneration(players.Length, totalWeights);
 
-        for (int i = 0; i < players.Length; i++) {
-            NeuralNetwork nn = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
-            Agent a = players[i].GetComponent<Agent>();
-            a.AttachNet(nn);
-            nn.toGenome(genAlg.getGenomeAt(0));
-            agents.Add(a);
+
+        //kad necemo da ucitamo onda je true
+        if (true)
+        {
+            for (int i = 0; i < players.Length; i++)
+            {
+                NeuralNetwork nn = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
+                Agent a = players[i].GetComponent<Agent>();
+                a.AttachNet(nn);
+                nn.toGenome(genAlg.getGenomeAt(0));
+                agents.Add(a);
+            }
+        }
+        else
+        {
+            genAlg.Load();
+            for (int i = 0; i < players.Length; i++)
+            {
+                NeuralNetwork nn = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
+                Agent a = players[i].GetComponent<Agent>();
+                nn.fromGenome(genAlg.getGenomeAt(i));
+                a.AttachNet(nn);
+                //nn.toGenome(genAlg.getGenomeAt(0));
+                agents.Add(a);
+            }
         }
     }
 	
@@ -40,6 +59,8 @@ public class NinjaEntity : MonoBehaviour {
                 genAlg.getGenomeAt(i).fitness = agents[i].GetFitness();
             }
 
+            //kolko sam skontao ne smeta mu sto svaku generaciju serijalizuje tj ne radi nesto puno sporije
+            genAlg.Save();
             //stvori novu generaciju
             genAlg.BreedNewGeneration();
 
