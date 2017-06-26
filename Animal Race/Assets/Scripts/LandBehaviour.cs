@@ -24,32 +24,35 @@ public class LandBehaviour : StateMachineBehaviour {
             n.Jump = false;
         }
     
-        else if(animator.gameObject.name == "Doggo")
+        else if (animator.gameObject.name.Contains("Doggo"))
         {
-            if (DoggoScript.Instance.OnGround)
+            DoggoScript n = animator.gameObject.GetComponent<DoggoScript>();
+            if (n.OnGround)
             {
                 animator.SetBool("land", false);
                 animator.ResetTrigger("jump");
             }
-            DoggoScript.Instance.Jump = false;
+            n.Jump = false;
         }
-        else if(animator.gameObject.name == "Squirrel")
+        else if (animator.gameObject.name.Contains("Squir"))
         {
-            if (SquirrelScript.Instance.isGrounded)
+            SquirrelScript n = animator.gameObject.GetComponent<SquirrelScript>();
+            if (n.OnGround)
             {
                 animator.SetBool("land", false);
                 animator.ResetTrigger("jump");
             }
-            SquirrelScript.Instance.jump = false;
+            n.Jump = false;
         }
-        else if(animator.gameObject.name == "Dragon")
+        else if (animator.gameObject.name.Contains("Dragon"))
         {
-            if (DragonScript.Instance.isGrounded)
+            DragonScript n = animator.gameObject.GetComponent<DragonScript>();
+            if (n.OnGround)
             {
                 animator.SetBool("land", false);
                 animator.ResetTrigger("jump");
             }
-            DragonScript.Instance.jump = false;
+            n.Jump = false;
         }
     }
 

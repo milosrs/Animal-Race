@@ -97,7 +97,6 @@
     <Compile Include="Assets\NewScripts\NinjaAgents\NinjaAgent6.cs" />
     <Compile Include="Assets\NewScripts\NinjaAgents\NinjaAgent7.cs" />
     <Compile Include="Assets\NewScripts\NinjaAgents\NinjaAgent8.cs" />
-    <Compile Include="Assets\NewScripts\NinjaEntity\NinjaEntity.cs" />
     <Compile Include="Assets\NewScripts\NinjaScripts\Ninja1.cs" />
     <Compile Include="Assets\NewScripts\NinjaScripts\Ninja2.cs" />
     <Compile Include="Assets\NewScripts\NinjaScripts\Ninja3.cs" />
@@ -117,6 +116,7 @@
     <Compile Include="Assets\Scripts\SensorScript.cs" />
     <Compile Include="Assets\Scripts\SpawnerScript.cs" />
     <Compile Include="Assets\Scripts\ThrowBehaviour.cs" />
+    <Compile Include="Assets\UI Scripts\UIManager.cs" />
     <Compile Include="Assets\UI Scripts\textScript.cs" />
   </ItemGroup>
   <ItemGroup>

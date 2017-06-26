@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class DoggoScript : MonoBehaviour {
 
-    //DOGGOS RIGID BODY AND ANIMATOR
+    //DOG RIGID BODY AND ANIMATOR
     private Animator doggoAnimator;
     public Rigidbody2D DoggoBody { get; set; }
     private Agent agent;
-    private float distance;
 
     //MOVEMENT AND CHARACTER FLIPPING
     [SerializeField]
@@ -25,10 +24,6 @@ public class DoggoScript : MonoBehaviour {
     [SerializeField]
     private float jumpForce;
 
-    /*[SerializeField]
-    private GameObject kunai;           //This will be Doggo special ability
-    */
-
     //Special ability
     [SerializeField]
     private float fallMultiplier = 2.5f;
@@ -38,56 +33,42 @@ public class DoggoScript : MonoBehaviour {
     //Properties
     public bool Jump { get; set; }
     public bool OnGround { get; set; }
-    public bool Throw { get; set; }
-    
 
-    //Singleton
-    private static DoggoScript instance;
-    public static DoggoScript Instance
+    //How far did this character get?
+    private float distance;
+    private float horizontal;
+
+    void Start()
     {
-        get
-        {
-            if (instance == null)
-            {
-                instance = GameObject.FindObjectOfType<DoggoScript>();
-            }
-            return instance;
-        }
-    }
-
-	// Use this for initialization
-	void Start () {
-        agent = GetComponent<Agent>();
+        horizontal = 0;
         facingRight = true;
+        agent = GetComponent<Agent>();
         DoggoBody = GetComponent<Rigidbody2D>();
         doggoAnimator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame, and it is not the correct way to move a character
-    void Update()
-    {
-        handleInput();
-        OnGround = IsGrounded();
-    }
-
-
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
     private void FixedUpdate()
     {
-        float horizontal = Input.GetAxis("Horizontal2");
+        OnGround = isGrounded();
         handleLayers();
-        handleMovement(horizontal);
-        flip(horizontal);
+
         if (DoggoBody.velocity.y < 0)
         {
+            doggoAnimator.SetBool("land", true);
             DoggoBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (DoggoBody.velocity.y > 0 && !Input.GetButton("Jump2"))
+        else if (DoggoBody.velocity.y > 0/* && !Input.GetButton("Jump")*/)
         {
             DoggoBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
         }
+
     }
 
+    /// <summary>
+    /// Ova funkcija pravi probleme
+    /// </summary>
+    /// <param name="horizontal"></param>
     private void handleMovement(float horizontal)
     {
         if (DoggoBody.velocity.y < 0)
@@ -100,9 +81,9 @@ public class DoggoScript : MonoBehaviour {
         if (Jump && OnGround)
         {
             DoggoBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-
         }
         doggoAnimator.SetFloat("speed", Mathf.Abs(horizontal));
+        flip(horizontal);
     }
 
     private void flip(float horizontal)
@@ -121,30 +102,31 @@ public class DoggoScript : MonoBehaviour {
         transform.localScale = scale;
     }
 
-    private void handleInput()
+    /*private void handleInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump = true;
-            doggoAnimator.SetTrigger("jump");
+            ninjaAnimator.SetTrigger("jump");
         }
-        /*if (Input.GetKeyDown(KeyCode.LeftAlt))
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
-            doggoAnimator.SetTrigger("throw");
-            //throwKunai(0);                CALL SPECIAL ABILITY
-        }*/
-    }
+            ninjaAnimator.SetTrigger("throw");
+            throwKunai(0);
+        }
+    }*/
 
-    private bool IsGrounded()
+    private bool isGrounded()
     {
         if (DoggoBody.velocity.y <= 0)
         {
             foreach (Transform point in groundPoints)
             {
-                Collider2D[] colliders = Physics2D.OverlapCircleAll(point.position, groundRadius, whatsGround);
-                for (int i = 0; i < colliders.Length; i++)
+                Collider2D[] coliders = Physics2D.OverlapCircleAll(point.position, groundRadius, whatsGround);
+
+                for (int i = 0; i < coliders.Length; i++)
                 {
-                    if (colliders[i].gameObject != gameObject)
+                    if (coliders[i].gameObject != gameObject)
                     {
                         return true;
                     }
@@ -178,29 +160,41 @@ public class DoggoScript : MonoBehaviour {
             GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0, 0, 90)));
             tmp.GetComponent<KunaiScript>().init(Vector2.left);
         }
-        // THIS WILL BE A METHOD FOR DOGS SPECIAL ABILITY
-    }*/
+    }
+    */
 
+    /// <summary>
+    /// Problem je bio u handleMovement funkciji koja se poziva na update, a likovi nisu aktivni.
+    /// prvi if-else proveri da li se krecemo levo ili desno, pa na osnovu toga pozivamo 
+    /// handleMovement funkciju
+    /// </summary>
     public void commandMe(float l, float r, float u)
     {
-        if (l > r && l > u)
+        Vector3 scale = transform.localScale;
+        if (l > r)
         {
-            Debug.Log("Dog should move left");
-            l = -1;
-            flip(l);
-            handleMovement(l);
+            if (facingRight)
+            {
+                facingRight = !facingRight;
+                scale.x *= -1;
+            }
+            DoggoBody.velocity = new Vector2(l * movementSpeed, DoggoBody.velocity.y);
+            doggoAnimator.SetFloat("speed", Mathf.Abs(l));
         }
-        else if (r > l && r > u)
+        else
         {
-            Debug.Log("Dog should move right");
-            flip(r);
-            r = 1;
-            handleMovement(r);
+            if (!facingRight)
+            {
+                facingRight = !facingRight;
+                scale.x *= -1;
+            }
+            DoggoBody.velocity = new Vector2(r * movementSpeed, DoggoBody.velocity.y);
+            doggoAnimator.SetFloat("speed", Mathf.Abs(r));
         }
-        else if (u > l && u > r && DoggoBody.velocity.y == 0)
+
+        if (u > l && u > r && DoggoBody.velocity.y == 0)
         {
-            Debug.Log("Dog should jump");
-            Jump = true;
+            DoggoBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             doggoAnimator.SetTrigger("jump");
         }
     }
@@ -218,5 +212,23 @@ public class DoggoScript : MonoBehaviour {
     public void setDistance(float d)
     {
         distance = d;
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), collision.gameObject.GetComponent<Collider2D>(), true);
+        }
+    }
+
+    public float getHorizontal()
+    {
+        return horizontal;
+    }
+
+    public void setHorizontal(float h)
+    {
+        horizontal = h;
     }
 }

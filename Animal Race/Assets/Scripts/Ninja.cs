@@ -196,7 +196,6 @@ public class Ninja : MonoBehaviour
             ninjaAnimator.SetFloat("speed", Mathf.Abs(r));
         }
 
-        //al ako je skok veci od levo ili desno onda dodaj jos skok na stranu na koju treba skociti
         if (u > l && u > r && NinjaBody.velocity.y == 0)
         {
             NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);

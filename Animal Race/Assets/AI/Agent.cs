@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour{
 
-    //Da li je ninja pao, delta predjenog puta, predjeni put, vreme koje je ziv.
+    //Da li je char pao, delta predjenog puta, predjeni put, vreme koje je ziv.
     private bool failed = false;
     private float distanceDelta, distance, timeAlive;
     
@@ -58,7 +58,22 @@ public class Agent : MonoBehaviour{
 
         if (failed)
         {
-            ((Ninja)player.gameObject.GetComponent<Ninja>()).setHorizontal(0f);
+            if (player.gameObject.name.Contains("Ninja"))
+            {
+                ((Ninja)player.gameObject.GetComponent<Ninja>()).setHorizontal(0f);
+            }
+            else if (player.gameObject.name.Contains("Dog"))
+            {
+                ((DoggoScript)player.gameObject.GetComponent<DoggoScript>()).setHorizontal(0f);
+            }
+            else if (player.gameObject.name.Contains("Squir"))
+            {
+                ((SquirrelScript)player.gameObject.GetComponent<SquirrelScript>()).setHorizontal(0f);
+            }
+            else if (player.gameObject.name.Contains("Dragon"))
+            {
+                ((DragonScript)player.gameObject.GetComponent<DragonScript>()).setHorizontal(0f);
+            }
             KillMe();
         }
         else
@@ -72,13 +87,6 @@ public class Agent : MonoBehaviour{
             inputs.Add(Normalise(dr));
             inputs.Add(Normalise(ddr));
 
-            if (gameObject.name == "Ninja1")
-            {
-                for(int i=0; i<inputs.Count; i++)
-                {
-                    Debug.Log("Ulaz[" + i + "]=" + inputs[i]);
-                }
-            }
 
             nn.setInput(inputs);
             nn.refreshNetwork();
@@ -87,11 +95,27 @@ public class Agent : MonoBehaviour{
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
 
-            this.gameObject.GetComponent<Ninja>().commandMe(commandL, commandR, commandU);
+            if (player.gameObject.name.Contains("Ninja"))
+            {
+                this.gameObject.GetComponent<Ninja>().commandMe(commandL, commandR, commandU);
+            }
+            else if (player.gameObject.name.Contains("Dog"))
+            {
+                this.gameObject.GetComponent<DoggoScript>().commandMe(commandL, commandR, commandU);
+            }
+            else if (player.gameObject.name.Contains("Squir"))
+            {
+                this.gameObject.GetComponent<SquirrelScript>().commandMe(commandL, commandR, commandU);
+            }
+            else if (player.gameObject.name.Contains("Dragon"))
+            {
+                this.gameObject.GetComponent<DragonScript>().commandMe(commandL, commandR, commandU);
+            }
+
             CalculateFitness();
         }
 
-        if (timeAlive >= 15)
+        if (timeAlive >= 35)
         {
             failed = true;
         }
@@ -99,9 +123,8 @@ public class Agent : MonoBehaviour{
 
     public float Normalise(float i)
     {
-        //float depth = i / 3.0f;             //Prosecna duzina Ray-a
-        //return 1 - depth;
-        return i;
+        float depth = i / 3.0f;             //Prosecna duzina Ray-a
+        return 1 - depth;
     }
 
     private void CastSensors()
