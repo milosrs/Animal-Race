@@ -5,42 +5,71 @@ using UnityEngine;
 
 public class textScript : MonoBehaviour {
 
-    /*
+    private float bestFitnessEver;
+    private float bestFitnessNow;
+    private float worstFitnessNow;
+    private int generation;
+
     [SerializeField]
-    private GameObject entityHolder;
+    private GameObject collection;
+    [SerializeField]
+    private Camera cam;
+
     private GA ga;
+    private NinjaEntity ne;
+    private Agent[] agent;
 
-    // Use this for initialization
-    void Start () {
-        NinjaEntity ne = entityHolder.GetComponent<NinjaEntity>();
+    public void Awake()
+    {
+        ne = collection.GetComponentInChildren<NinjaEntity>();
         ga = ne.getGa();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        float bestFit = 0;
-        try
-        {
-            bestFit = ga.GetBest().fitness;
-        }
-        catch
-        {
+        agent = collection.GetComponentsInChildren<Agent>();
+        bestFitnessEver = 0.0f;
+        bestFitnessNow = 0.0f;
+        generation = -1;
+        worstFitnessNow = 0;
+    }
 
-        }
-        int current_generation = 1;
-        try
-        {
-            current_generation = ga.getGeneration();
-        }
-        catch
-        {
+    public void OnGUI()
+    {
+        
+        GUI.Label(new Rect(5, 0, 200, 20), "Best Fitness Ever: " + bestFitnessEver);
+        GUI.Label(new Rect(5, 30, 200, 20), "Best in generation: " + bestFitnessNow);
+        GUI.Label(new Rect(5, 60, 200, 20), "Worst in generation: " + worstFitnessNow);
+        GUI.Label(new Rect(5, 90 + 20, 200, 20), "Generation: " + generation);
+    }
 
-        }
-        Text text = this.gameObject.GetComponent<Text>();
-        if (entityHolder.GetComponent<NinjaEntity>() != null && text!=null)
+    public void FixedUpdate()
+    {
+        if (ga != null)
         {
-            text.text += "--Ninja details--\nCurrent generation: "+current_generation;
-            text.text += "\nBest fitness ever: " + bestFit;
+            for (int i = 0; i < agent.Length; i++)
+            {
+                if (agent[i].GetFitness() > bestFitnessEver)
+                {
+                    bestFitnessEver = agent[i].GetFitness();
+                }
+            }
+            for(int i=0; i < agent.Length; i++)
+            {
+                if(agent[i].GetFitness() > bestFitnessNow)
+                {
+                    bestFitnessNow = agent[i].GetFitness();
+                }
+            }
+            for(int i=0; i<agent.Length; i++)
+            {
+                if(agent[i].GetFitness() < worstFitnessNow)
+                {
+                    worstFitnessNow = agent[i].GetFitness();
+                }
+            }
+            generation = ga.getGeneration();
         }
-	}*/
+        else
+        {
+            ga = ne.getGa();
+        }
+    }
+
 }

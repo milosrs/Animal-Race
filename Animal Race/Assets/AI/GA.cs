@@ -12,7 +12,8 @@ public class GA {
     private int totalPopulation;
     private int totalWeights;
 
-    public GA() {
+    public GA()
+    {
         generation = new List<Genome>();        //Stvaramo novu populaciju
         mutationRate = 0.28f;                   //Rate = 0.28
         currentGeneration = 1;                  //Trenutna generacija
