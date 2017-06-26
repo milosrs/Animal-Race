@@ -19,6 +19,8 @@ public class textScript : MonoBehaviour {
     private NinjaEntity ne;
     private Agent[] agent;
 
+    private Image img;
+
     public void Start()
     {
         ne = collection.GetComponentInChildren<NinjaEntity>();
@@ -32,6 +34,7 @@ public class textScript : MonoBehaviour {
 
     public void OnGUI()
     {
+        
         GUI.contentColor = Color.green;
         GUI.Label(new Rect(5, 0, 200, 20), "Best Fitness Ever: " + bestFitnessEver);
         GUI.Label(new Rect(5, 30, 200, 20), "Best in generation: " + bestFitnessNow);
