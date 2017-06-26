@@ -133,10 +133,6 @@ public class GA {
             totalWeights = parent2.weights.Count;
         }
 
-        Debug.Log("Total weights " + totalWeights);
-        Debug.Log("Parent1 weight count: " + parent1.weights.Count);
-        Debug.Log("Parent2 weight count: " + parent2.weights.Count);
-
         for (int i = 0; i < totalWeights-3; i++)
         {
             if (i < singlePoint)
@@ -312,5 +308,10 @@ public class GA {
     public Genome getGenomeAt(int index)
     {
         return generation[index];
+    }
+
+    public int getGeneration()
+    {
+        return currentGeneration;
     }
 }

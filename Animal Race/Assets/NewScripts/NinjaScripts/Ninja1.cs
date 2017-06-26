@@ -184,7 +184,7 @@ public class Ninja1 : MonoBehaviour
             flip(-1);
             if (transform.localScale.x < 0)
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            NinjaBody.velocity = new Vector2(l * movementSpeed, NinjaBody.velocity.y);
+            NinjaBody.velocity = new Vector2(-1 * movementSpeed, NinjaBody.velocity.y);
 
             ninjaAnimator.SetFloat("speed", Mathf.Abs(r));
         }
@@ -193,7 +193,7 @@ public class Ninja1 : MonoBehaviour
             flip(1);
             if (transform.localScale.x > 0)
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            NinjaBody.velocity = new Vector2(r * movementSpeed, NinjaBody.velocity.y);
+            NinjaBody.velocity = new Vector2(1 * movementSpeed, NinjaBody.velocity.y);
 
             ninjaAnimator.SetFloat("speed", Mathf.Abs(l));
         }

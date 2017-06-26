@@ -116,6 +116,7 @@
     <Compile Include="Assets\Scripts\SensorScript.cs" />
     <Compile Include="Assets\Scripts\SpawnerScript.cs" />
     <Compile Include="Assets\Scripts\ThrowBehaviour.cs" />
+    <Compile Include="Assets\UI Scripts\textScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\roguelike city tileset\Spritesheet\spritesheetInfo.txt" />

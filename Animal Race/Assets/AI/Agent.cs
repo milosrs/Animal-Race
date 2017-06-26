@@ -45,9 +45,8 @@ public class Agent : MonoBehaviour{
     }
 
     // Update is called once per frame
-    /*void FixedUpdate()
+    void FixedUpdate()
     {
-
         CastSensors();
         u = distances[0];
         l = distances[1];
@@ -73,21 +72,22 @@ public class Agent : MonoBehaviour{
             inputs.Add(Normalise(dr));
             inputs.Add(Normalise(ddr));
 
-            //nn.setInput(inputs);
+            nn.setInput(inputs);
             nn.refreshNetwork();
 
             commandL = nn.getOutput(0);
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
 
-            GetComponent<Ninja1>().CommandMe(commandL, commandR, commandU);
+            this.gameObject.GetComponent<Ninja>().commandMe(commandL, commandR, commandU);
+            CalculateFitness();
         }
 
         if (timeAlive >= 10)
         {
             failed = true;
         }
-    }*/
+    }
 
     public float Normalise(float i)
     {
@@ -146,10 +146,20 @@ public class Agent : MonoBehaviour{
         failed = fail;
     }
 
+    /// <summary>
+    /// Fitness mora da se racuna u momentu kad karakter hoda jer cemo crtati
+    /// grafove, i kamera prati onog koji ima najbolji fitnes
+    /// </summary>
     public void CalculateFitness()
     {
-        //menhetn rastojanje od pocetne tacke pa do tacke gde je pao
+        //Fitnes ne sme da bude menhetn rastojanje, jer ce tako nindze misliti da smeju da idu u levo i nikada nece nauciti da idu u desno.
+        //Y nam ne igra nikakvu ulogu u fitnesu, nego broj preskocenih prepreka i to ako stignemo da implementiramo.
+        ///menhetn rastojanje od pocetne tacke pa do tacke gde je pao
+        float dist = transform.position.x;
+
+        /*//menhetn rastojanje od pocetne tacke pa do tacke gde je pao
         float dist = Mathf.Abs(startPosition.x - transform.position.x) + Mathf.Abs(startPosition.y - transform.position.y);
+        */
         fitness = timeAlive * timeAliveCoeficient + dist * distanceCoeficient;
     }
 
@@ -162,4 +172,6 @@ public class Agent : MonoBehaviour{
     {
         return nn;
     }
+
+    
 }

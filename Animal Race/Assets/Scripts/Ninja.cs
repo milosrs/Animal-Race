@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ninja : MonoBehaviour {
+public class Ninja : MonoBehaviour
+{
 
     //NINJAS RIGID BODY AND ANIMATOR
     private Animator ninjaAnimator;
@@ -11,7 +12,7 @@ public class Ninja : MonoBehaviour {
 
     //MOVEMENT AND CHARACTER FLIPPING
     [SerializeField]
-    public float movementSpeed;
+    private float movementSpeed;
     private bool facingRight;
 
     //JUMPING
@@ -57,7 +58,8 @@ public class Ninja : MonoBehaviour {
     //Background collision ignorer
     public GameObject bg1, bg2;
 
-    void Start () {
+    void Start()
+    {
         agent = GetComponent<Agent>();
         facingRight = true;
         NinjaBody = GetComponent<Rigidbody2D>();
@@ -69,7 +71,7 @@ public class Ninja : MonoBehaviour {
     // Update is called once per frame, and it is not the correct way to move a character
     void Update()
     {
-        handleMovement();
+        handleInput();
         OnGround = isGrounded();
         Physics2D.IgnoreCollision(bg1.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
         Physics2D.IgnoreCollision(bg2.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
@@ -78,23 +80,35 @@ public class Ninja : MonoBehaviour {
     //FixedUpdate is called once per TimeStamp (computer time) and is the correct way to move
     private void FixedUpdate()
     {
+        float horizontal = Input.GetAxis("Horizontal");
         handleLayers();
+        handleMovement(horizontal);
+        flip(horizontal);
         if (NinjaBody.velocity.y < 0)
         {
             NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (NinjaBody.velocity.y > 0 && !Jump)
+        else if (NinjaBody.velocity.y > 0 && !Input.GetButton("Jump"))
         {
             NinjaBody.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulti - 1) * Time.deltaTime;
         }
     }
 
-    private void handleMovement()
+    private void handleMovement(float horizontal)
     {
         if (NinjaBody.velocity.y < 0)
         {
-            ninjaAnimator.SetBool("land",true);
+            ninjaAnimator.SetBool("land", true);
         }
+
+        NinjaBody.velocity = new Vector2(horizontal * movementSpeed, NinjaBody.velocity.y);
+
+        /*if (Jump && OnGround)
+        {
+            NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+        }*/
+        ninjaAnimator.SetFloat("speed", Mathf.Abs(horizontal));
     }
 
     private void flip(float horizontal)
@@ -129,15 +143,15 @@ public class Ninja : MonoBehaviour {
 
     private bool isGrounded()
     {
-        if(NinjaBody.velocity.y <= 0)
+        if (NinjaBody.velocity.y <= 0)
         {
-            foreach(Transform point in groundPoints)
+            foreach (Transform point in groundPoints)
             {
                 Collider2D[] coliders = Physics2D.OverlapCircleAll(point.position, groundRadius, whatsGround);
 
-                for(int i=0; i<coliders.Length; i++)
+                for (int i = 0; i < coliders.Length; i++)
                 {
-                    if(coliders[i].gameObject != gameObject)
+                    if (coliders[i].gameObject != gameObject)
                     {
                         return true;
                     }
@@ -153,7 +167,8 @@ public class Ninja : MonoBehaviour {
         {
             ninjaAnimator.SetLayerWeight(1, 1);
         }
-        else{
+        else
+        {
             ninjaAnimator.SetLayerWeight(0, 1);
         }
     }
@@ -162,35 +177,29 @@ public class Ninja : MonoBehaviour {
     {
         if (facingRight)
         {
-            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0,0,-90)));
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0, 0, -90)));
             tmp.GetComponent<KunaiScript>().init(Vector2.right);
         }
         else
         {
-            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0,0,90)));
+            GameObject tmp = (GameObject)Instantiate(kunai, transform.position, Quaternion.Euler(new Vector3(0, 0, 90)));
             tmp.GetComponent<KunaiScript>().init(Vector2.left);
         }
     }
 
     public void commandMe(float l, float r, float u)
     {
-        if(l > r && l > u)
+        if (l > r)
         {
-            if (transform.localScale.x < 0)
-                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            NinjaBody.velocity = new Vector2(l * movementSpeed, NinjaBody.velocity.y);
-
-            ninjaAnimator.SetFloat("speed", Mathf.Abs(r));
+            flip(-1);
+            handleMovement(-1);
         }
-        else if(r > l && r > u)
+        else
         {
-            if (transform.localScale.x > 0)
-                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            NinjaBody.velocity = new Vector2(r * movementSpeed, NinjaBody.velocity.y);
-
-            ninjaAnimator.SetFloat("speed", Mathf.Abs(l));
+            flip(1);
+            handleMovement(1);
         }
-        else if (u > l && u > r && NinjaBody.velocity.y == 0)
+        if (u > l && u > r && NinjaBody.velocity.y == 0)
         {
             NinjaBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             ninjaAnimator.SetTrigger("jump");
@@ -212,8 +221,11 @@ public class Ninja : MonoBehaviour {
         distance = d;
     }
 
-    public void setAgent(Agent agent)
+    public void OnCollisionEnter2D(Collision2D collision)
     {
-        this.agent = agent;
+        if (collision.gameObject.tag == "Player")
+        {
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), collision.gameObject.GetComponent<Collider2D>(), true);
+        }
     }
 }

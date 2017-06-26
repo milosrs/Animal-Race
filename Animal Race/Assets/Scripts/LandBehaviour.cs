@@ -15,7 +15,15 @@ public class LandBehaviour : StateMachineBehaviour {
         
         if (animator.gameObject.name.Contains("Ninja"))
         {
-            if (Ninja1.Instance.OnGround)
+            Ninja n = animator.gameObject.GetComponent<Ninja>();
+            if (n.OnGround)
+            {
+                animator.SetBool("land", false);
+                animator.ResetTrigger("jump");
+            }
+            n.Jump = false;
+
+            /*if (Ninja1.Instance.OnGround)
             {
                 animator.SetBool("land", false);
                 animator.ResetTrigger("jump");
@@ -42,14 +50,9 @@ public class LandBehaviour : StateMachineBehaviour {
                 animator.ResetTrigger("jump");
             }
             Ninja4.Instance.Jump = false;
-
-            /*if (Ninja.Instance.OnGround)
-            {
-                animator.SetBool("land", false);
-                animator.ResetTrigger("jump");
-            }
-            Ninja.Instance.Jump = false;*/
+            */
         }
+    
         else if(animator.gameObject.name == "Doggo")
         {
             if (DoggoScript.Instance.OnGround)

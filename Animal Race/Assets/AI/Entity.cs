@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour {
 
-    private List<Agent> agents;                     //Svi agenti
-
     public GA genAlg;
 
     [SerializeField]
-    private GameObject[] players;
+    private GameObject player;
 
     private Agent agent;
 
@@ -26,13 +24,10 @@ public class Entity : MonoBehaviour {
         genAlg.GenerateNewGeneration(1, totalWeights);
 
         NeuralNetwork neuralNet = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
-        //neuralNet.toGenome(ge
-        agent = players[0].GetComponent<Agent>();
-        agent.AttachNet(neuralNet);
-
-        neuralNet.toGenome(genAlg.getGenomeAt(0));
         
-
+        agent = player.GetComponent<Agent>();
+        agent.AttachNet(neuralNet);
+        neuralNet.toGenome(genAlg.getGenomeAt(0));
     }
 
     private void Update()
@@ -42,9 +37,10 @@ public class Entity : MonoBehaviour {
             genAlg.getGenomeAt(0);
             genAlg.BreedNewGeneration();
             agent.getNeuralNetwork().fromGenome(genAlg.getGenomeAt(0));
+        }
+        else
+        {
 
         }
-        
     }
-
 }
