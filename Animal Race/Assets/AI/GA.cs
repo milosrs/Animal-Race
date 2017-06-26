@@ -29,7 +29,7 @@ public class GA {
         {
             if(Randomize(0.0f,1.0f) <= mutationRate)                                                        //Ako se pogodi da nas random broj bude <= konstanti mutacije
             {
-                input.weights[i] += (Randomize(-2.0f, 2.0f) - Randomize(-2.0f, 2.0f)) * maxPermutation;     //Mutiraj tezine
+                input.weights[i] += (Randomize(-0.3f, 0.3f) - Randomize(-0.3f, 0.3f)) * maxPermutation;     //Mutiraj tezine
             }
         }
     }
@@ -144,7 +144,7 @@ public class GA {
                 }
                 catch
                 {
-                    baby1.weights.Add(Randomize(-2.0f, 2.0f));
+                    baby1.weights.Add(Randomize(-0.3f, 0.3f));
                 }
                 try
                 {
@@ -152,7 +152,7 @@ public class GA {
                 }
                 catch
                 {
-                    baby2.weights.Add(Randomize(-2.0f, 2.0f));
+                    baby2.weights.Add(Randomize(-0.3f, 0.3f));
                 }
             }
             else
@@ -163,7 +163,7 @@ public class GA {
                 }
                 catch
                 {
-                    baby1.weights.Add(Randomize(-2.0f, 2.0f));
+                    baby1.weights.Add(Randomize(-0.3f, 0.3f));
                 }
                 try
                 {
@@ -171,7 +171,7 @@ public class GA {
                 }
                 catch
                 {
-                    baby2.weights.Add(Randomize(-2.0f, 2.0f));
+                    baby2.weights.Add(Randomize(-0.3f, 0.3f));
                 }
             }
         }
@@ -251,7 +251,7 @@ public class GA {
             g.weights = new List<float>();
             for (int j = 0; j < totalWeights; j++)
             {
-                g.weights.Add(Randomize(-2.0f, 2.0f));
+                g.weights.Add(Randomize(-0.3f, 0.3f));
             }
             generation.Add(g);
         }
@@ -279,7 +279,7 @@ public class GA {
 
         for (int j = 0; j < totalWeights; j++)
         {
-            genome.weights[j] = Randomize(-2.0f, 2.0f) - Randomize(-2.0f, 2.0f);
+            genome.weights[j] = Randomize(-0.3f, 0.3f) - Randomize(-0.3f, 0.3f);
         }
 
         return genome;

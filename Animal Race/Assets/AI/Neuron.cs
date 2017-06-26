@@ -9,7 +9,7 @@ public class Neuron {
 
     public float RandomizeWeights()                     //Random tezine na pocetku
     {
-        float rand = Random.Range(-2.0f, 2.0f);
+        float rand = Random.Range(-0.3f, 0.3f);
         return rand;
     }
 

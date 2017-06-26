@@ -108,7 +108,7 @@ public class NeuralNetwork{
                     }
                     catch
                     {
-                        layerWeight.Add(UnityEngine.Random.Range(-2.0f, 2.0f));
+                        layerWeight.Add(UnityEngine.Random.Range(-0.3f, 0.3f));
                     }
                 }
                 layers[i].getNeurons()[j].setWeights(layerWeight);

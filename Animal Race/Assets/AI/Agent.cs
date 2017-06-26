@@ -45,6 +45,7 @@ public class Agent : MonoBehaviour{
     // Update is called once per frame
     void FixedUpdate()
     {
+        distances.Clear();
         CastSensors();
         u = distances[0];
         l = distances[1];
@@ -71,6 +72,14 @@ public class Agent : MonoBehaviour{
             inputs.Add(Normalise(dr));
             inputs.Add(Normalise(ddr));
 
+            if (gameObject.name == "Ninja1")
+            {
+                for(int i=0; i<inputs.Count; i++)
+                {
+                    Debug.Log("Ulaz[" + i + "]=" + inputs[i]);
+                }
+            }
+
             nn.setInput(inputs);
             nn.refreshNetwork();
 
@@ -82,7 +91,7 @@ public class Agent : MonoBehaviour{
             CalculateFitness();
         }
 
-        if (timeAlive >= 10)
+        if (timeAlive >= 15)
         {
             failed = true;
         }
@@ -90,8 +99,9 @@ public class Agent : MonoBehaviour{
 
     public float Normalise(float i)
     {
-        float depth = i / 3.0f;             //Prosecna duzina Ray-a
-        return 1 - depth;
+        //float depth = i / 3.0f;             //Prosecna duzina Ray-a
+        //return 1 - depth;
+        return i;
     }
 
     private void CastSensors()
