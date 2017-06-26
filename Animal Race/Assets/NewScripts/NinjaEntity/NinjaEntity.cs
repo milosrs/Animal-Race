@@ -53,7 +53,7 @@ public class NinjaEntity : MonoBehaviour {
         }
 	}
 
-    private bool GenerationKill()
+    public bool GenerationKill()
     {
         bool ret = true;
         for (int i = 0; i < agents.Count; i++)
