@@ -12,13 +12,15 @@ public class Entity : MonoBehaviour {
     private List<Agent> agents;
     private float fittest;
 
+    private string nameOfFile;
+
 	// Use this for initialization
 	void Start () {
         agents = new List<Agent>();
         genAlg = new GA();
         int totalWeights = 6 * 6 + 4 * 6 + 4 * 4 + 3 * 4 + 14;
         genAlg.GenerateNewGeneration(players.Length, totalWeights);
-
+        nameOfFile = players[0].name;
 
         //kad necemo da ucitamo onda je true
         if (true)
@@ -34,7 +36,7 @@ public class Entity : MonoBehaviour {
         }
         else
         {
-            genAlg.Load();
+            genAlg.Load(nameOfFile);
             for (int i = 0; i < players.Length; i++)
             {
                 NeuralNetwork nn = new NeuralNetwork(6, 6, new int[] { 4, 4 }, 3, 3);
@@ -60,7 +62,7 @@ public class Entity : MonoBehaviour {
             }
 
             //kolko sam skontao ne smeta mu sto svaku generaciju serijalizuje tj ne radi nesto puno sporije
-            genAlg.Save();
+            genAlg.Save(nameOfFile);
             //stvori novu generaciju
             genAlg.BreedNewGeneration();
 

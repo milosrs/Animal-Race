@@ -321,10 +321,10 @@ public class GA {
         return currentGeneration;
     }
 
-    public void Load()
+    public void Load(string nameOfFile)
     {
         IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream("savedData.bin",
+        Stream stream = new FileStream(nameOfFile + ".bin",
                                   FileMode.Open,
                                   FileAccess.Read,
                                   FileShare.Read);
@@ -340,10 +340,10 @@ public class GA {
         this.totalWeights = obj.totalWeights;
     }
 
-    public void Save()
+    public void Save(string nameOfFile)
     {
         IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream("savedData.bin",
+        Stream stream = new FileStream(nameOfFile + ".bin",
                                  FileMode.Create,
                                  FileAccess.Write, FileShare.None);
         formatter.Serialize(stream, this);
