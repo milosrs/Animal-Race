@@ -95,6 +95,7 @@ public class Agent : MonoBehaviour{
             commandR = nn.getOutput(1);
             commandU = nn.getOutput(2);
 
+
             if (player.gameObject.name.Contains("Ninja"))
             {
                 this.gameObject.GetComponent<Ninja>().commandMe(commandL, commandR, commandU);
@@ -192,7 +193,7 @@ public class Agent : MonoBehaviour{
         /*//menhetn rastojanje od pocetne tacke pa do tacke gde je pao
         float dist = Mathf.Abs(startPosition.x - transform.position.x) + Mathf.Abs(startPosition.y - transform.position.y);
         */
-        fitness = timeAlive * timeAliveCoeficient + dist * distanceCoeficient;
+        fitness = dist;
     }
 
     public float GetFitness()

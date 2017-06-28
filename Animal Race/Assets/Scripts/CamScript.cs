@@ -111,9 +111,9 @@ public class CamScript : MonoBehaviour {
                     i++;
                 }
                 if (maxInd > -1 && ninjas[maxInd].isActiveAndEnabled)
-                    transform.position = new Vector3(bodies[maxInd].position.x + 7, 0, -10);
+                    transform.position = new Vector3(bodies[maxInd].position.x + 7, bodies[maxInd].position.y + 7, -10);
                 else if (ninjas.Count > 0)
-                    transform.position = new Vector3(ninjas[0].getAgent().getStartPosition().x, 0, -10);
+                    transform.position = new Vector3(ninjas[0].getAgent().getStartPosition().x, ninjas[0].getAgent().getStartPosition().y, -10);
             }
         }
         else if (player.name.Contains("Dog"))
@@ -133,9 +133,9 @@ public class CamScript : MonoBehaviour {
                     i++;
                 }
                 if (maxInd > -1 && dogs[maxInd].isActiveAndEnabled)
-                    transform.position = new Vector3(bodies[maxInd].position.x + 7, 0, -10);
+                    transform.position = new Vector3(bodies[maxInd].position.x + 7, bodies[maxInd].position.y, -10);
                 else if (dogs.Count > 0)
-                    transform.position = new Vector3(dogs[0].getAgent().getStartPosition().x, 0, -10);
+                    transform.position = new Vector3(dogs[0].getAgent().getStartPosition().x, dogs[0].getAgent().getStartPosition().y, -10);
             }
         }
         else if (player.name.Contains("Squi"))
@@ -155,9 +155,9 @@ public class CamScript : MonoBehaviour {
                     i++;
                 }
                 if (maxInd > -1 && squirrels[maxInd].isActiveAndEnabled)
-                    transform.position = new Vector3(bodies[maxInd].position.x + 7, 0, -10);
+                    transform.position = new Vector3(bodies[maxInd].position.x + 7, bodies[maxInd].position.y, -10);
                 else if (squirrels.Count > 0)
-                    transform.position = new Vector3(squirrels[0].getAgent().getStartPosition().x, 0, -10);
+                    transform.position = new Vector3(squirrels[0].getAgent().getStartPosition().x, squirrels[0].getAgent().getStartPosition().y, -10);
             }
         }
         else if (player.name.Contains("Dragon"))
@@ -177,9 +177,9 @@ public class CamScript : MonoBehaviour {
                     i++;
                 }
                 if (maxInd > -1 && dragons[maxInd].isActiveAndEnabled)
-                    transform.position = new Vector3(bodies[maxInd].position.x + 7, 0, -10);
+                    transform.position = new Vector3(bodies[maxInd].position.x + 7, bodies[maxInd].position.y, -10);
                 else if (dragons.Count > 0)
-                    transform.position = new Vector3(dragons[0].getAgent().getStartPosition().x, 0, -10);
+                    transform.position = new Vector3(dragons[0].getAgent().getStartPosition().x, dragons[0].getAgent().getStartPosition().y, -10);
             }
         }
     }

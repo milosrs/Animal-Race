@@ -116,8 +116,6 @@ public class UIManager : MonoBehaviour {
 
     public void FixedUpdate()
     {
-
-        Debug.Log("Orineter positions: 1:" + orienterPositions[0] + " 2:" + orienterPositions[1]);
         if (ga != null)
         {
             if (collection.gameObject.name.Contains("Ninja"))
